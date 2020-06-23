@@ -17,7 +17,6 @@
     "email": "vadim.kuz02@gmail.com",
     "url": "https://github.com/unLomTrois"
   },
-  "license": "ISC",
   "devDependencies": {
     "@types/node-fetch": "^2.5.7",
     "ts-node": "^8.10.2",
