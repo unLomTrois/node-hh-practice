@@ -1,0 +1,29 @@
+{
+  "name": "node-fetch-hh",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build-ts": "tsc --build tsconfig.json",
+    "start": "node build/index.js",
+    "dev": "ts-node src/index.ts --project tsconfig.json"
+  },
+  "keywords": [
+    "parser",
+    "headhunter"
+  ],
+  "author": {
+    "name": "vadim kuznecov ",
+    "email": "vadim.kuz02@gmail.com",
+    "url": "https://github.com/unLomTrois"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
