@@ -19,7 +19,7 @@ const vacancies = getVacancies({
 }, hh_headers);
 
 // сохранить полученные вакансии
-const save = async (vacancies: Promise<any[]>, dir: string = './log') => {
+const save = async (vacancies: Promise<unknown[]>, dir = './log') => {
 
   // если нет папки для сохранения логов, создать её
   if (!existsSync(dir)){
