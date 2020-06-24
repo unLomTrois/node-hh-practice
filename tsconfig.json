@@ -8,7 +8,9 @@
   "compilerOptions": {
     "outDir": "./build",
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
 
     // strict checks
     "alwaysStrict": true,

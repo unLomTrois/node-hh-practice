@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "private": true,
+  "type": "module",
   "scripts": {
     "build-ts": "tsc -b tsconfig.json",
     "diagnose-ts": "tsc -b tsconfig.json --extendedDiagnostics",

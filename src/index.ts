@@ -1,4 +1,4 @@
-import { getVacancies } from './hh/vacancies';
+import { getVacancies } from './hh/vacancies.js';
 import { writeFile, existsSync, mkdirSync } from 'fs'
 
 // заголовки запросов
