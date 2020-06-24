@@ -1,41 +1,52 @@
 import fetch, { HeadersInit } from 'node-fetch';
 import { HH } from '../api/hh/module';
 
-// HH
+
+/// ПРЕОБРАЗОВАНИЯ
+
+// преобразование интерфейса запроса в строку вида ?option1=value1&option2=value2& ...
 const queryToString = (query: HH.QueryInterface): string => {
   const query_list: string[] = [];
 
+  // объединить пары ключей и значений интерфейса знаком '='
   Object.entries(query).forEach(([key, value]) => {
-    query_list.push([key, value].join('='))
+    query_list.push([key, value].join('='));
   });
 
+  // объединить эти пары знаком '&'
   return query_list.join('&');
 }
 
-const getURL = (url: HH.URL): string => url.baseURL + url.method + queryToString(url.query)
+// преобразовать (объединить) поля класса HH.URL в url-запрос
+const getURL = (url: HH.URL): string => url.baseURL + url.method + queryToString(url.query);
 
-// FUNC
 
+/// ЗАПРОСЫ
+
+// сделать запрос для получения общего числа вакансий по запросу
 const getFound = async (url: string, headers_init?: HeadersInit): Promise<number> => {
 
-  // change per_page in url
+  // изменить per_page=*число* в url на per_page=0,
+  // чтобы не получать ненужные данные
   url = url.replace(/per_page=(100)|[0-9]\d?/, 'per_page=0');
 
-  // get json
+  // сделать запрос и дождаться json-представления
   const data: any = await fetch(url, { headers: headers_init })
     .then(res => res.json());
 
-  // get found field
+  // взять нужное поле found
   const found: number = data.found;
 
   return found;
 }
 
+// получить все найденные вакансии
 const getVacancies = async (hh_url: HH.URL, headers_init?: HeadersInit, limit: number = 2000): Promise<any[]> => {
 
-  // get url
+  // получить строчное представление url
   const base_url = getURL(hh_url);
 
+  // общее число найденных вакансий
   const found: number = await getFound(
     base_url,
     headers_init
@@ -48,18 +59,18 @@ const getVacancies = async (hh_url: HH.URL, headers_init?: HeadersInit, limit: n
 
   // вычисляем количество требуемых страниц
   const pages: number = Math.ceil((found <= limit ? found : limit ) / per_page);
-
   console.log(pages);
 
+  // сгенерировать массив ссылок числом pages, с пагинацией page
   const urls: string[] = Array.from(
     Array(pages).fill(base_url),
     (url: string, page: number) => url.replace(/&page=([0-9]|1[0-9])/, `&page=${ page }`)
   );
 
-  // console.log(urls);
-
+  // сделать серию ассинхронных запросов, получить promise представления json
   const responses: Promise<any>[] = urls.map(url => fetch(url, { headers: headers_init }).then(res => res.json()));
 
+  // дождаться резолва промисов, получить их поля items, заполнить ими новый массив
   const vacancies: any[] = new Array().concat( ...(await Promise.all(responses)).map(page => page.items) );
 
   return vacancies;
