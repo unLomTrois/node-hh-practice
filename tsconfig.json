@@ -10,7 +10,28 @@
     "target": "ES2020",
     "module": "CommonJS",
 
+    // strict checks
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "strict": true,
-    "alwaysStrict": true
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+
+    // remove comments
+    "removeComments": true,
+
+    // linter checks
+    "noFallthroughCasesInSwitch":true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    // advanced
+    "allowUnreachableCode": false,
+    "allowUnusedLabels":false,
+    "forceConsistentCasingInFileNames": true,
   }
 }

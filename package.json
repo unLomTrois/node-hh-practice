@@ -4,7 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build-ts": "tsc --build tsconfig.json",
+    "build-ts": "tsc -b tsconfig.json",
+    "diagnose-ts": "tsc -b tsconfig.json --extendedDiagnostics",
     "start": "node build/index.js",
     "dev": "ts-node src/index.ts --project tsconfig.json"
   },
@@ -24,5 +25,9 @@
   },
   "dependencies": {
     "node-fetch": "^2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unLomTrois/node-hh-parser"
   }
 }
