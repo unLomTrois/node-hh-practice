@@ -18,7 +18,7 @@ const queryToString = (query: HH.QueryInterface): string => {
 
 // преобразовать (объединить) поля класса HH.URL в url-запрос
 const getURL = (url: HH.URL): string =>
-  url.baseURL + url.method + queryToString(url.query);
+  url.baseURL + url.method + '?' + queryToString(url.query);
 
 /// ЗАПРОСЫ
 

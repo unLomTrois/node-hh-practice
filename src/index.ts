@@ -12,7 +12,7 @@ const vacancies = getVacancies(
     baseURL: 'https://api.hh.ru',
     method: '/vacancies',
     query: {
-      '?no_magic': true,
+      no_magic: true,
       per_page: 100,
       page: 0,
       area: 1641

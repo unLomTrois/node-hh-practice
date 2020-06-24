@@ -1,6 +1,6 @@
 export namespace HH {
   export interface QueryInterface {
-    '?no_magic': boolean;
+    no_magic?: boolean;
     area?: number;
     text?: string;
     schedule?: 'fullDay' | 'shift' | 'flexible' | 'remote' | 'flyInFlyOut';
