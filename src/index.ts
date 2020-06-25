@@ -1,5 +1,6 @@
 import { getVacancies } from './hh/vacancies.js';
 import { writeFile, existsSync, mkdirSync } from 'fs';
+import { resolve } from 'path';
 
 // заголовки запросов
 const hh_headers: HeadersInit = {
@@ -32,8 +33,11 @@ const save = async (vacancies: Promise<any[]>, dir = './log') => {
   const data = await vacancies;
   console.log(`${data.length} vacancies have parsed`);
 
-  // сохранить
-  writeFile(`${dir}/log.json`, JSON.stringify(data, undefined, 2), (err) => {
+  // получить путь для сохранения
+  const log_path = resolve(process.cwd(), dir, 'vacancies.json');
+
+  // сохранить вакансии
+  writeFile(log_path, JSON.stringify(data, undefined, 2), (err) => {
     if (err) throw err;
     console.log('completely saved');
   });
