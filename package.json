@@ -5,8 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build-ts": "tsc -b tsconfig.json",
-    "diagnose-ts": "tsc -b tsconfig.json --extendedDiagnostics",
+    "build:ts": "tsc -b tsconfig.json",
+    "diagnose:ts": "tsc -b tsconfig.json --extendedDiagnostics",
     "start": "node build/index.js",
     "dev": "ts-node src/index.ts --project tsconfig.json",
     "build-rollup": "rollup -c rollup.config.js",
