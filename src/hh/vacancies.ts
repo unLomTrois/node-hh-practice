@@ -1,10 +1,10 @@
 import fetch, { HeadersInit } from 'node-fetch';
-import { HH } from '../api/hh/module';
+import { HH } from '../types/hh/module';
 
 /// ПРЕОБРАЗОВАНИЯ
 
 // преобразование интерфейса запроса в строку вида ?option1=value1&option2=value2& ...
-const queryToString = (query: HH.QueryInterface): string => {
+const queryToString = (query: HH.Query): string => {
   const query_list: string[] = [];
 
   // объединить пары ключей и значений интерфейса знаком '='
