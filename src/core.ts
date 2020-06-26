@@ -1,42 +1,32 @@
-import { HH } from './types/core/module';
+import { Parser } from './types/core/module';
 import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
-import { getVacancies } from './hh/vacancies.js';
-import { HeadersInit } from 'node-fetch';
+import Requests from './requests.js';
 
-class Core implements HH.Parser.Core {
-  /**
-   * заголовки
-   */
-  private hh_headers: HeadersInit = {
-    'User-Agent': 'node-hh-parser (vadim.kuz02@gmail.com)'
-  };
+class Core implements Parser.Core {
+  private requests: Requests = new Requests();
 
   /**
    * makeRequest
    */
-  public async makeRequest(): Promise<any[]> {
-    return getVacancies(
-      {
-        baseURL: 'https://api.hh.ru',
-        method: '/vacancies',
-        query: {
-          no_magic: true,
-          per_page: 100,
-          page: 0,
-          area: 1641
-        }
-      },
-      this.hh_headers
-    );
-  }
+  public makeRequest = async (): Promise<any[]> => {
+    return this.requests.getVacancies({
+      no_magic: true,
+      per_page: 100,
+      page: 0,
+      area: 1641
+    });
+  };
 
   /**
    * метод сохранения вакансий
    * @param vacancies - массив вакансий
    * @param dir - директория для сохранения логов
    */
-  public async saveVacancies(vacancies: any[], dir = './log'): Promise<void> {
+  public saveVacancies = async (
+    vacancies: any[],
+    dir = './log'
+  ): Promise<void> => {
     // если нет папки для сохранения логов, создать её
     if (!existsSync(dir)) {
       mkdirSync(dir);
@@ -53,7 +43,7 @@ class Core implements HH.Parser.Core {
       if (err) throw err;
       console.log('completely saved');
     });
-  }
+  };
 }
 
 export default Core;
