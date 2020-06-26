@@ -1,9 +1,10 @@
+import { HH } from './types/core/module';
 import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import { getVacancies } from './hh/vacancies.js';
 import { HeadersInit } from 'node-fetch';
 
-class Core {
+class Core implements HH.Parser.Core {
   /**
    * заголовки
    */

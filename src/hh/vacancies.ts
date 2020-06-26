@@ -1,10 +1,10 @@
 import fetch, { HeadersInit } from 'node-fetch';
-import { HH } from '../types/hh/module';
+import { HH } from '../types/api/module';
 
 /// ПРЕОБРАЗОВАНИЯ
 
 // преобразование интерфейса запроса в строку вида ?option1=value1&option2=value2& ...
-const queryToString = (query: HH.Query): string => {
+const queryToString = (query: HH.API.Query): string => {
   const query_list: string[] = [];
 
   // объединить пары ключей и значений интерфейса знаком '='
@@ -17,7 +17,7 @@ const queryToString = (query: HH.Query): string => {
 };
 
 // преобразовать (объединить) поля класса HH.URL в url-запрос
-const getURL = (url: HH.URL): string =>
+const getURL = (url: HH.API.URL): string =>
   url.baseURL + url.method + '?' + queryToString(url.query);
 
 /// ЗАПРОСЫ
@@ -44,7 +44,7 @@ const getFound = async (
 
 // получить все найденные вакансии
 const getVacancies = async (
-  hh_url: HH.URL,
+  hh_url: HH.API.URL,
   headers_init?: HeadersInit,
   limit = 2000
 ): Promise<any[]> => {
