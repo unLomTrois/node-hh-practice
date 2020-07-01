@@ -4,8 +4,8 @@ import commander from 'commander';
 const { Command } = commander;
 const cli = new Command();
 
-import Core from './core/core.js';
-const core = new Core();
+import IO from './io.js';
+const io = new IO();
 
 cli.name('node-hh-parsevr').version('0.4.0');
 
@@ -19,18 +19,7 @@ cli
   .command('search <text>')
   .description('само за себя говорит')
   .action((text) => {
-    core
-      .makeRequest(
-        {
-          no_magic: true,
-          per_page: 100,
-          page: 0,
-          area: cli.area,
-          text: text
-        },
-        cli.limit
-      )
-      .then((vacs) => core.saveVacancies(vacs));
+    io.makeRequest(text, cli.area, cli.limit);
   });
 
 cli.parse(process.argv);
