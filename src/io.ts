@@ -1,4 +1,8 @@
 import Core from './core/core.js';
+import Save from './save.js';
+
+import { IO } from './types/io/module';
+import { API } from './types/api/module.js';
 
 /**
  * @todo написать интерфейс
@@ -7,30 +11,22 @@ import Core from './core/core.js';
  */
 class IO {
   private core = new Core();
+  private save = new Save();
 
-  /**
-   * makeRequest
-   * @todo заменить отдельные аргументы интерфейсом запроса IO
-   */
-  public makeRequest = (text: string, area: number, limit: number): void => {
-    this.core
-      .makeRequest(
-        {
-          no_magic: true,
-          per_page: 100,
-          page: 0,
-          area: area,
-          text: text
-        },
-        limit
-      )
-      /**
-       * @todo написать обособленный Save-модуль
-       * @todo заменить сохранение напрямую обращением к Save-модулю
-       * @link https://trello.com/c/SfevqagQ
-       */
-      .then((vacs) => this.core.saveVacancies(vacs));
-  };
+  public makeRequest(request: IO.Request): void {
+    const vacancies: API.Vacancies = this.core.makeRequest(
+      {
+        no_magic: true,
+        per_page: 100,
+        page: 0,
+        area: request.area,
+        text: request.text
+      },
+      request.limit
+    );
+
+    vacancies.then((vacs) => this.save.vacancies(vacs));
+  }
 }
 
 export default IO;

@@ -16,15 +16,19 @@ cli
    * @todo сделать suggest-модуль, заменить id-представление на name-представление
    * @link https://trello.com/c/S7mFIRBk
    */
-  .option('-a, --area <area-id>', 'set area', parseFloat, 1)
-  .option('-l, --limit <number>', 'set limit', parseFloat, 100);
+  .option<number>('-a, --area <area-id>', 'set area', parseFloat, 1)
+  .option<number>('-l, --limit <number>', 'set limit', parseFloat, 100);
 
 // комманды
 cli
   .command('search <text>')
   .description('поиск вакансий по полю text')
-  .action((text) => {
-    io.makeRequest(text, cli.area, cli.limit);
+  .action((text: string) => {
+    io.makeRequest({
+      text: text,
+      area: cli.area,
+      limit: cli.limit
+    });
   });
 
 cli.parse(process.argv);

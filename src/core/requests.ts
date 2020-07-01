@@ -48,7 +48,7 @@ class Requests implements Parser.Requests {
   public getVacancies = async (
     query: API.Query,
     limit = 2000
-  ): Promise<any[]> => {
+  ): API.Vacancies => {
     const base_api_url: API.URL = {
       baseURL: 'https://api.hh.ru',
       method: '/vacancies',

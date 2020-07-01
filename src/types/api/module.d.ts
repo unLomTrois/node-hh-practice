@@ -60,6 +60,11 @@ export namespace API {
     query: Query;
   }
 
+  /// ALIASES
+
+  export type Vacancy = any;
+  export type Vacancies = Promise<Vacancy[]>;
+
   /// Not used
   export interface Response {
     name: string;
