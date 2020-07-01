@@ -1,6 +1,7 @@
 {
   "name": "node-fetch-hh",
-  "version": "0.1.0",
+  "version": "0.4.0",
+  "bin": "bin/cli.js",
   "description": "",
   "private": true,
   "type": "module",
@@ -22,6 +23,7 @@
     "url": "https://github.com/unLomTrois"
   },
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
@@ -34,6 +36,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "commander": "^5.1.0",
     "node-fetch": "^2.6.0"
   },
   "repository": {

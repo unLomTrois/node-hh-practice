@@ -1,7 +1,8 @@
-import { Parser } from './types/core/module';
+import { Parser } from '../types/core/module';
 import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import Requests from './requests.js';
+import { API } from '../types/api/module';
 
 class Core implements Parser.Core {
   private requests: Requests = new Requests();
@@ -9,13 +10,11 @@ class Core implements Parser.Core {
   /**
    * makeRequest
    */
-  public makeRequest = async (): Promise<any[]> => {
-    return this.requests.getVacancies({
-      no_magic: true,
-      per_page: 100,
-      page: 0,
-      area: 1641
-    });
+  public makeRequest = async (
+    query: API.Query,
+    limit: number
+  ): Promise<any[]> => {
+    return this.requests.getVacancies(query, limit);
   };
 
   /**

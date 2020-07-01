@@ -1,8 +1,13 @@
 import { API } from '../api/module';
 
 export namespace Parser {
+  export interface CoreAPI {
+    text: string;
+    area: number;
+  }
+
   export interface Core {
-    makeRequest(): Promise<any[]>;
+    makeRequest(query: CoreAPI, limit: number): Promise<any[]>;
     saveVacancies(vacancies: any[], dir: string): Promise<void>;
   }
 

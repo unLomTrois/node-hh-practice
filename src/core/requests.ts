@@ -1,5 +1,5 @@
-import { Parser } from './types/core/module';
-import { API } from './types/api/module';
+import { Parser } from '../types/core/module';
+import { API } from '../types/api/module';
 import fetch, { HeadersInit } from 'node-fetch';
 
 // Класс для преобразований API-интерфейсов/объектов в примитивы (строки) для запросов
