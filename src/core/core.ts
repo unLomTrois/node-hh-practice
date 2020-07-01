@@ -11,7 +11,7 @@ class Core implements Parser.Core {
   public makeRequest = async (
     query: API.Query,
     limit: number
-  ): API.Vacancies => {
+  ): Promise<API.Vacancy[]> => {
     return this.requests.getVacancies(query, limit);
   };
 }

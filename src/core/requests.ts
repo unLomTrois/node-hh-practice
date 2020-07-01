@@ -29,7 +29,7 @@ class Requests implements Parser.Requests {
   public getVacancies = async (
     query: API.Query,
     limit = 2000
-  ): API.Vacancies => {
+  ): Promise<API.Vacancy[]> => {
     const base_api_url: API.URL = {
       baseURL: 'https://api.hh.ru',
       method: '/vacancies',
@@ -61,12 +61,12 @@ class Requests implements Parser.Requests {
     );
 
     // сделать серию ассинхронных запросов, получить promise представления json
-    const data: Promise<any>[] = urls.map((url) =>
+    const data: Promise<API.Vacancy>[] = urls.map((url) =>
       fetch(url, { headers: this.hh_headers }).then((res) => res.json())
     );
 
     // дождаться резолва промисов, получить их поля items, заполнить ими новый массив
-    const vacancies = [].concat(
+    const vacancies: API.Vacancy[] = [].concat(
       ...(await Promise.all(data)).map((page) => page.items)
     );
 

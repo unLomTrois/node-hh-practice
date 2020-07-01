@@ -62,8 +62,15 @@ export namespace API {
 
   /// ALIASES
 
+  /**
+   * @todo расписать точное представление вакансии
+   * @link https://github.com/hhru/api/blob/master/docs/vacancies.md
+   */
+
+  /**
+   * вакансия
+   */
   export type Vacancy = any;
-  export type Vacancies = Promise<Vacancy[]>;
 
   /// Not used
   export interface Response {

@@ -14,7 +14,7 @@ class IO {
   private save = new Save();
 
   public makeRequest(request: IO.Request): void {
-    const vacancies: API.Vacancies = this.core.makeRequest(
+    const vacancies: Promise<API.Vacancy[]> = this.core.makeRequest(
       {
         no_magic: true,
         per_page: 100,
