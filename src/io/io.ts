@@ -1,8 +1,8 @@
-import Core from './core/core.js';
+import Core from '../core/core.js';
 import Save from './save.js';
 
-import { IO } from './types/io/module';
-import { API } from './types/api/module.js';
+import { IO } from '../types/io/module';
+import { API } from '../types/api/module.js';
 
 /**
  * @todo написать интерфейс

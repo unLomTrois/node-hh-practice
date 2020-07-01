@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import commander from 'commander';
-import IO from './io.js';
+import IO from './io/io.js';
 
 // иниициализация IO
 const io = new IO();

@@ -1,6 +1,6 @@
 import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
-import { API } from './types/api/module';
+import { API } from '../types/api/module';
 
 class Save {
   /**
