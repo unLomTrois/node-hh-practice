@@ -24,7 +24,7 @@ cli
   .command('search <text>')
   .description('поиск вакансий по полю text')
   .action((text: string) => {
-    io.makeRequest({
+    io.search({
       text: text,
       area: cli.area,
       limit: cli.limit

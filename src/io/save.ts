@@ -2,13 +2,17 @@ import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import { API } from '../types/api/module';
 
+/**
+ * Модуль Сохранений
+ * @link https://trello.com/c/SfevqagQ
+ */
 class Save {
   /**
    * метод сохранения вакансий
    * @param vacancies - массив вакансий
    * @param dir - директория для сохранения логов
    */
-  public vacancies = async (
+  public add = async (
     vacancies: API.Vacancy[],
     dir = './log'
   ): Promise<void> => {
