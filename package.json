@@ -8,7 +8,7 @@
   "scripts": {
     "build:ts": "tsc -b tsconfig.json",
     "diagnose:ts": "tsc -b tsconfig.json --extendedDiagnostics",
-    "start": "node build/index.js",
+    "start": "node build/index.js"
   },
   "keywords": [
     "parser",
