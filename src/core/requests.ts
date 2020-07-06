@@ -1,11 +1,16 @@
 import { Parser } from '../types/core/module';
 import { API } from '../types/api/module';
-import fetch, { HeadersInit } from 'node-fetch';
+import fetch, { HeadersInit, RequestInit, Response } from 'node-fetch';
 import URLFormatter from './formatter.js';
 
 import { createHash } from 'crypto';
 import { resolve } from 'path';
 import { readFileSync, writeFile, existsSync, mkdirSync } from 'fs';
+
+/**
+ * @todo сделать модуль хеширования
+ * @todo сделать модуль кеширования
+ */
 
 // Модуль запросов
 class Requests implements Parser.Requests {
@@ -66,7 +71,7 @@ class Requests implements Parser.Requests {
 
     // сделать серию ассинхронных запросов, получить promise представления json
     const data: Promise<API.Vacancy>[] = urls.map((url) =>
-      fetch(url, { headers: this.hh_headers }).then((res) => res.json())
+      this.fetchCache(url, { headers: this.hh_headers })
     );
 
     // дождаться резолва промисов, получить их поля items, заполнить ими новый массив
@@ -81,49 +86,56 @@ class Requests implements Parser.Requests {
     throw new Error('Method not implemented.');
   }
 
-  md5 = (str: string): string => {
+  /**
+   * зашифровать строку в хеш md5
+   * @return string
+   */
+  private md5 = (str: string): string => {
     return createHash('md5').update(str).digest('hex');
   };
 
-  async fetchCache(): Promise<any> {
-    console.log('REQ FETCH CACHE');
-
-    const requestArguments = 'https://jsonplaceholder.typicode.com/todos/1';
-
+  /**
+   * делает fetch по @url и @init , либо читая из @cache
+   * @returns json-представление
+   */
+  private fetchCache = async (
+    url: string,
+    init?: RequestInit
+  ): Promise<any> => {
     const cahceDirPath = './cache';
     if (!existsSync(cahceDirPath)) {
       mkdirSync(cahceDirPath);
     }
 
-    const cacheHash = this.md5(JSON.stringify(requestArguments));
-    const cacheFilePath = resolve(
+    const cacheHash: string = this.md5(JSON.stringify(url));
+    const cacheFilePath: string = resolve(
       process.cwd(),
       cahceDirPath,
-      `${cacheHash}.json`
+      `${cacheHash}`
     );
 
     if (existsSync(cacheFilePath)) {
       // read from cache
-      const data = JSON.parse(
+      const data: any = JSON.parse(
         readFileSync(cacheFilePath, { encoding: 'utf-8' })
       );
 
       return data;
     } else {
       // make new fetch
-      const fetchResponse = await fetch(requestArguments);
+      const fetchResponse: Response = await fetch(url, init);
 
-      const data = await fetchResponse.json();
+      // get json
+      const data: any = await fetchResponse.json();
 
       // cache response
       writeFile(cacheFilePath, JSON.stringify(data), (err) => {
         if (err) throw err;
-        console.log('completely saved');
       });
 
       return data;
     }
-  }
+  };
 }
 
 export default Requests;

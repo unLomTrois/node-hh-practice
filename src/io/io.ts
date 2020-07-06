@@ -32,16 +32,6 @@ class IO {
   }
 
   /**
-   * @name TEST_FEATURE
-   */
-  public async fetchCache(): Promise<void> {
-    console.log('IO FETCH CACHE');
-
-    const data = await this.core.fetchCache();
-    console.log(data);
-  }
-
-  /**
    * делает серии запросов по request
    * @param request - IO.Request
    * @returns промис на API.Vacancy[] - массив из вакансий, не превышающий 2000 объектов
