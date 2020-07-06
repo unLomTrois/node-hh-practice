@@ -17,6 +17,7 @@ class Core implements Parser.Core {
   };
 
   public fetchCache = async (): Promise<Response> => {
+    console.log('CORE FETCH CACHE');
     return this.requests.fetchCache();
   };
 }

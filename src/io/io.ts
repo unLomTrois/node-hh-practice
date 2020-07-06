@@ -35,7 +35,7 @@ class IO {
    * @name TEST_FEATURE
    */
   public async fetchCache(): Promise<void> {
-    console.log('---fetch-cache---');
+    console.log('IO FETCH CACHE');
 
     const data = await this.core.fetchCache();
     console.log(data);

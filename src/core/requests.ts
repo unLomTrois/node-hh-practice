@@ -1,11 +1,11 @@
 import { Parser } from '../types/core/module';
 import { API } from '../types/api/module';
-import fetch, { HeadersInit, Response } from 'node-fetch';
+import fetch, { HeadersInit } from 'node-fetch';
 import URLFormatter from './formatter.js';
 
 import { createHash } from 'crypto';
 import { resolve } from 'path';
-import { readFileSync, writeFile } from 'fs';
+import { readFileSync, writeFile, existsSync, mkdirSync } from 'fs';
 
 // Модуль запросов
 class Requests implements Parser.Requests {
@@ -81,40 +81,47 @@ class Requests implements Parser.Requests {
     throw new Error('Method not implemented.');
   }
 
-  async fetchCache(): Promise<Response> {
-    const md5 = (str: string): string => {
-      return createHash('md5').update(str).digest('hex');
-    };
+  md5 = (str: string): string => {
+    return createHash('md5').update(str).digest('hex');
+  };
+
+  async fetchCache(): Promise<any> {
+    console.log('REQ FETCH CACHE');
 
     const requestArguments = 'https://jsonplaceholder.typicode.com/todos/1';
 
     const cahceDirPath = './cache';
-    const cacheHash = md5(JSON.stringify(requestArguments));
+    if (!existsSync(cahceDirPath)) {
+      mkdirSync(cahceDirPath);
+    }
+
+    const cacheHash = this.md5(JSON.stringify(requestArguments));
     const cacheFilePath = resolve(
       process.cwd(),
       cahceDirPath,
       `${cacheHash}.json`
     );
 
-    try {
-      // попытаться прочитать из файла
-      const body = JSON.parse(
+    if (existsSync(cacheFilePath)) {
+      // read from cache
+      const data = JSON.parse(
         readFileSync(cacheFilePath, { encoding: 'utf-8' })
       );
 
-      return body;
-    } catch (err) {
+      return data;
+    } else {
+      // make new fetch
       const fetchResponse = await fetch(requestArguments);
-      // const bodyResponse = awaitfetchResponse[bodyFunctionName]();
 
       const data = await fetchResponse.json();
 
-      writeFile(cacheFilePath, JSON.stringify(data, undefined, 2), (err) => {
+      // cache response
+      writeFile(cacheFilePath, JSON.stringify(data), (err) => {
         if (err) throw err;
         console.log('completely saved');
       });
 
-      return fetchResponse.json();
+      return data;
     }
   }
 }
