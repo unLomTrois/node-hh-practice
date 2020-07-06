@@ -31,4 +31,11 @@ cli
     });
   });
 
+cli
+  .command('fetch-cache')
+  .description('реализация кеширования у FetchAPI')
+  .action(() => {
+    io.fetchCache();
+  });
+
 cli.parse(process.argv);

@@ -1,7 +1,11 @@
 import { Parser } from '../types/core/module';
 import { API } from '../types/api/module';
-import fetch, { HeadersInit } from 'node-fetch';
+import fetch, { HeadersInit, Response } from 'node-fetch';
 import URLFormatter from './formatter.js';
+
+import { createHash } from 'crypto';
+import { resolve } from 'path';
+import { readFileSync, writeFile } from 'fs';
 
 // Модуль запросов
 class Requests implements Parser.Requests {
@@ -75,6 +79,43 @@ class Requests implements Parser.Requests {
 
   getResumes(): Promise<any[]> {
     throw new Error('Method not implemented.');
+  }
+
+  async fetchCache(): Promise<Response> {
+    const md5 = (str: string): string => {
+      return createHash('md5').update(str).digest('hex');
+    };
+
+    const requestArguments = 'https://jsonplaceholder.typicode.com/todos/1';
+
+    const cahceDirPath = './cache';
+    const cacheHash = md5(JSON.stringify(requestArguments));
+    const cacheFilePath = resolve(
+      process.cwd(),
+      cahceDirPath,
+      `${cacheHash}.json`
+    );
+
+    try {
+      // попытаться прочитать из файла
+      const body = JSON.parse(
+        readFileSync(cacheFilePath, { encoding: 'utf-8' })
+      );
+
+      return body;
+    } catch (err) {
+      const fetchResponse = await fetch(requestArguments);
+      // const bodyResponse = awaitfetchResponse[bodyFunctionName]();
+
+      const data = await fetchResponse.json();
+
+      writeFile(cacheFilePath, JSON.stringify(data, undefined, 2), (err) => {
+        if (err) throw err;
+        console.log('completely saved');
+      });
+
+      return fetchResponse.json();
+    }
   }
 }
 
