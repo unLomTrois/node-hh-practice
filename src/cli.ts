@@ -31,4 +31,13 @@ cli
     });
   });
 
+cli
+  .command('get-full')
+  .description(
+    'получает полное представление вакансий, полученных в результате вызова команды search'
+  )
+  .action(() => {
+    io.getFull();
+  });
+
 cli.parse(process.argv);

@@ -10,6 +10,7 @@ import { readFileSync, writeFile, existsSync, mkdirSync } from 'fs';
 /**
  * @todo сделать модуль хеширования
  * @todo сделать модуль кеширования
+ * @todo модуль кеширования должен быть частью IO, с возможностью открывать и писать в файлы
  */
 
 // Модуль запросов
@@ -78,6 +79,16 @@ class Requests implements Parser.Requests {
     const vacancies: API.Vacancy[] = [].concat(
       ...(await Promise.all(data)).map((page) => page.items)
     );
+
+    return vacancies;
+  };
+
+  public getFullVacancies = async (urls: string[]): Promise<API.Vacancy[]> => {
+    const data: Promise<API.Vacancy>[] = urls.map((url) =>
+      this.fetchCache(url)
+    );
+
+    const vacancies: API.Vacancy[] = await Promise.all(data);
 
     return vacancies;
   };
