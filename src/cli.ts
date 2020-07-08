@@ -3,6 +3,12 @@
 import commander from 'commander';
 import IO from './io/io.js';
 
+import Suggest from './suggest.js';
+
+/**
+ * @todo транформмировать этот файл в общий класс
+ */
+
 // иниициализация IO
 const io = new IO();
 
@@ -10,33 +16,36 @@ const io = new IO();
 const cli = new commander.Command();
 cli.name('node-hh-parsevr').version('0.4.0');
 
+// инициализация suggest
+const suggest = new Suggest();
+
 // опции
 cli
-  /**
-   * @todo сделать suggest-модуль, заменить id-представление на name-представление
-   * @link https://trello.com/c/S7mFIRBk
-   */
-  .option<number>(
-    '-a, --area <area-id>',
-    'индекс территории поиска',
-    parseFloat,
-    1
+  .option(
+    '-a, --area <area-name>',
+    'название территории поиска или индекс',
+    'Россия'
   )
-  .option<number>(
-    '-l, --limit <number>',
-    'ограничение по поиску',
-    parseFloat,
-    2000
-  );
+  /**
+   * @todo расписать возможные состояния
+   */
+  .option('-L, --locale <lang>', 'язык локализации', 'RU');
+
+cli.option<number>(
+  '-l, --limit <number>',
+  'ограничение по поиску',
+  parseFloat,
+  2000
+);
 
 // комманды
 cli
   .command('search <text>')
   .description('поиск вакансий по полю text')
-  .action((text: string) => {
+  .action(async (text: string) => {
     io.search({
       text: text,
-      area: cli.area,
+      area: await suggest.area(cli.area, cli.locale),
       limit: cli.limit
     });
   });
