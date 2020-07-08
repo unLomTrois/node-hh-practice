@@ -12,11 +12,11 @@ class Save {
    * @param vacancies - массив вакансий
    * @param dir - директория для сохранения логов
    */
-  public add = async (
+  public add = (
     vacancies: API.Vacancy[],
     logdirname = './log',
     logfilename = 'vacancies.json'
-  ): Promise<void> => {
+  ): void => {
     // если нет папки для сохранения логов, создать её
     if (!existsSync(logdirname)) {
       mkdirSync(logdirname);

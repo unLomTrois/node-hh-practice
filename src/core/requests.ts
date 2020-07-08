@@ -75,8 +75,8 @@ class Requests {
     );
 
     // дождаться резолва промисов, получить их поля items
-    const vacancies: API.Vacancy[] = (await Promise.all(data)).map(
-      (page) => page.items
+    const vacancies: API.Vacancy[] = [].concat(
+      ...(await Promise.all(data)).map((page) => page.items)
     );
 
     return vacancies;

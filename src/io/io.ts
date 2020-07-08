@@ -25,15 +25,15 @@ class IO {
    * search and save vacancies
    * @param request - IO.Request
    */
-  public async search(request: IO.Request): Promise<void> {
+  public search = async (request: IO.Request): Promise<void> => {
     // получить вакансии
     const vacancies: API.Vacancy[] = await this.getVacancies(request);
 
     // сохранить собранные вакансии
     this.saveVacancies(vacancies);
-  }
+  };
 
-  public async getFull(): Promise<void> {
+  public getFull = async (): Promise<void> => {
     const short_vacancies = this.getVacanciesFromLog();
 
     /**
@@ -44,20 +44,18 @@ class IO {
     );
 
     this.saveFullVacancies(full_vacancies);
-  }
+  };
 
-  private async getFullVacancies(
+  private getFullVacancies = async (
     short_vacancies: API.Vacancy[]
-  ): Promise<API.Vacancy[]> {
-    return this.core.getFullVacancies(short_vacancies);
-  }
+  ): Promise<API.Vacancy[]> => this.core.getFullVacancies(short_vacancies);
 
   /**
    * делает серии запросов по request
    * @param request - IO.Request
    * @returns промис на API.Vacancy[] - массив из вакансий, не превышающий 2000 объектов
    */
-  private getVacancies(request: IO.Request): Promise<API.Vacancy[]> {
+  private getVacancies = (request: IO.Request): Promise<API.Vacancy[]> => {
     return this.core.makeRequest(
       {
         no_magic: true,
@@ -68,25 +66,23 @@ class IO {
       },
       request.limit
     );
-  }
+  };
 
   /**
    * сохраняет собранные вакансии
    * @param vacancies - API.Vacancies
    */
-  private saveVacancies(vacancies: API.Vacancy[]): void {
+  private saveVacancies = (vacancies: API.Vacancy[]): void =>
     this.save.add(vacancies);
-  }
 
-  private saveFullVacancies(vacancies: API.Vacancy[]): void {
+  private saveFullVacancies = (vacancies: API.Vacancy[]): void =>
     this.save.add(vacancies, './log', 'full_vacancies.json');
-  }
 
   /**
    * получает вакансии из папки log
    * @todo сделать async-модуль чтения и записи
    */
-  private getVacanciesFromLog(): API.Vacancy[] {
+  private getVacanciesFromLog = (): API.Vacancy[] => {
     const log_dir_path = './log';
 
     // предполагаем, что файл сокращённых вакансий - vacancies.json
@@ -100,7 +96,7 @@ class IO {
     );
 
     return data;
-  }
+  };
 }
 
 export default IO;
