@@ -5,9 +5,8 @@ import { API } from '../types/api/module';
  */
 class URLFormatter {
   /**
-   * преобразование интерфейса запроса
-   * @param query - API.Query объект
-   * @returns строка вида ?option1=value1&option2=value2&...
+   * преобразовывает интерфейс запроса в строка вида ?option1=value1&option2=value2&...
+   * @param query - запрос, объект API.Query
    */
   private queryToString = (query: API.Query): string => {
     const query_list: string[] = [];
@@ -22,9 +21,8 @@ class URLFormatter {
   };
 
   /**
-   * преобразовать (объединить) поля класса HH.URL в url-запрос
+   * преобразовывает объект API.URL строку вида https://hh.ru/method?option1=value1&option2=value2&...
    * @param url - API.URL объект
-   * @returns строка вида https://hh.ru/method?option1=value1&option2=value2&...
    */
   public getURL = (url: API.URL): string =>
     `${url.baseURL + url.method}?${this.queryToString(url.query)}`;

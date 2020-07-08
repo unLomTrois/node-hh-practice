@@ -5,20 +5,26 @@ class Core {
   private requests: Requests = new Requests();
 
   /**
-   * makeRequest
+   * запрашивает списки вакансий из Request-модуля, возвращает их
+   * @param query - запрос, объект API.Query
+   * @param limit - ограничение по количеству требуемых к выдаче вакансий
    */
-  public makeRequest = async (
+  public getVacancies = async (
     query: API.Query,
     limit: number
   ): Promise<API.Vacancy[]> => {
     return this.requests.getVacancies(query, limit);
   };
 
+  /**
+   * запрашивает полное представление вакансий из Request-модуля, возвращает их
+   * @param short_vacancies - массив вакансий
+   */
   public getFullVacancies = async (
     short_vacancies: API.Vacancy[]
   ): Promise<API.FullVacancy[]> => {
     // получить поля url
-    const urls: string[] = short_vacancies.map((vac) => vac.url);
+    const urls: string[] = this.getUrlsToFull(short_vacancies);
 
     // профетчить полученный массив url-ов через модуль запросов
     const full_vacancies: API.FullVacancy[] = await this.requests.getFullVacancies(
@@ -27,6 +33,14 @@ class Core {
 
     return full_vacancies;
   };
+
+  /**
+   * возвращает массив из строк вида URL, ведущие к полному представлению вакансии
+   * @param short_vacancies - массив сокращённых вакансий
+   */
+  private getUrlsToFull(short_vacancies: any[]): string[] {
+    return short_vacancies.map((vac) => vac.url);
+  }
 }
 
 export default Core;

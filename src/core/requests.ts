@@ -18,7 +18,10 @@ class Requests {
     'User-Agent': 'node-hh-parser (vadim.kuz02@gmail.com)'
   };
 
-  // сделать запрос для получения общего числа вакансий по запросу
+  /**
+   * делает запрос для получения общего числа вакансий по запросу
+   * @param url - строка вида URL
+   */
   private getFound = async (url: string): Promise<number> => {
     // изменить per_page=*число* в url на per_page=0,
     // чтобы не получать ненужные данные
@@ -33,6 +36,11 @@ class Requests {
     return data.found;
   };
 
+  /**
+   * асинхронно делает запросы на REST API, возвращает массив вакансий
+   * @param query - запрос, объект типа API.Query
+   * @param limit - ограничение по количеству требуемых к выдаче вакансий
+   */
   public getVacancies = async (
     query: API.Query,
     limit = 2000
@@ -80,7 +88,13 @@ class Requests {
     return vacancies;
   };
 
-  public getFullVacancies = async (urls: string[]): Promise<API.Vacancy[]> => {
+  /**
+   * асинхронно делает запросы по ссылкам urls, возвращает массив из полных вакансий
+   * @param urls - массив из строк вида URL
+   */
+  public getFullVacancies = async (
+    urls: string[]
+  ): Promise<API.FullVacancy[]> => {
     const data: Promise<API.FullVacancy>[] = urls.map((url) =>
       this.fetchCache(url)
     );
@@ -91,13 +105,14 @@ class Requests {
   };
 
   /**
-   * зашифровать строку в хеш md5
-   * @return string
-   */
-
-  /**
-   * делает fetch по @url и @init , либо читая из @cache
-   * @returns json-представление
+   * Проверяет на наличие кеша от предыдущих вызовов.
+   *
+   * Если кеш есть, читает информацию из него.
+   *
+   * Если же его нет, делает новый @fetch , получает json и кеширует результат.
+   *
+   * @param url - строка вида URL
+   * @param init - объект RequestInit
    */
   private fetchCache = async (
     url: string,

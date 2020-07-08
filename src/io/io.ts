@@ -14,9 +14,10 @@ import { resolve } from 'path';
 class IO {
   private core = new Core();
   private save = new Save();
+
   /**
-   * search and save vacancies
-   * @param request - IO.Request
+   * находит, получает и сохраняет массивы вакансий по @request
+   * @param request - объект IO.Request
    */
   public search = async (request: IO.Request): Promise<void> => {
     // получить вакансии
@@ -26,6 +27,9 @@ class IO {
     this.saveVacancies(vacancies);
   };
 
+  /**
+   * Получает и сохраняет массивы полного представления вакансий
+   */
   public getFull = async (): Promise<void> => {
     const short_vacancies = this.getVacanciesFromLog();
 
@@ -39,17 +43,24 @@ class IO {
     this.saveFullVacancies(full_vacancies);
   };
 
+  /**
+   * запрашивает из Core полное представления вакансий
+   *
+   * возвращает массив из API.FullVacancy, не превышающий 2000 объектов
+   * @param short_vacancies - массив из объектов API.Vacancy
+   */
   private getFullVacancies = async (
     short_vacancies: API.Vacancy[]
   ): Promise<API.FullVacancy[]> => this.core.getFullVacancies(short_vacancies);
 
   /**
-   * делает серии запросов по request
-   * @param request - IO.Request
-   * @returns промис на API.Vacancy[] - массив из вакансий, не превышающий 2000 объектов
+   * запрашиват из Core вакансии по запросу @request
+   *
+   * возвращает массив из API.Vacancy, не превышающий 2000 объектов
+   * @param request - объект IO.Request
    */
   private getVacancies = (request: IO.Request): Promise<API.Vacancy[]> => {
-    return this.core.makeRequest(
+    return this.core.getVacancies(
       {
         no_magic: true,
         per_page: 100,
@@ -69,9 +80,16 @@ class IO {
     return this.save.add(vacancies);
   };
 
+  /**
+   * сохраняет полное представление вакансий через Save
+   * @param vacancies - массив из API.FullVacancy
+   */
   private saveFullVacancies = (vacancies: API.FullVacancy[]): void =>
     this.save.add(vacancies, './log', 'full_vacancies.json');
 
+  /**
+   * получает массив вакансий из папки log
+   */
   private getVacanciesFromLog = (): API.Vacancy[] => {
     const log_dir_path = './log';
 
