@@ -1,20 +1,21 @@
 import { API } from '../types/api/module';
 import fetch, { HeadersInit, RequestInit, Response } from 'node-fetch';
+
 import URLFormatter from './formatter.js';
+import Cache from './cache.js';
 
 import { createHash } from 'crypto';
 import { resolve } from 'path';
-import { readFileSync, writeFile, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 
 /**
  * @todo сделать модуль хеширования
- * @todo сделать модуль кеширования
- * @todo модуль кеширования должен быть частью IO, с возможностью открывать и писать в файлы
  */
 
 // Модуль запросов
 class Requests {
   private formatter: URLFormatter = new URLFormatter();
+  private cache: Cache = new Cache();
 
   private hh_headers: HeadersInit = {
     'User-Agent': 'node-hh-parser (vadim.kuz02@gmail.com)'
@@ -122,9 +123,7 @@ class Requests {
 
     if (existsSync(cacheFilePath)) {
       // read from cache
-      const data: any = JSON.parse(
-        readFileSync(cacheFilePath, { encoding: 'utf-8' })
-      );
+      const data: any = this.cache.get(cacheFilePath);
 
       return data;
     } else {
@@ -135,9 +134,7 @@ class Requests {
       const data: any = await fetchResponse.json();
 
       // cache response
-      writeFile(cacheFilePath, JSON.stringify(data), (err) => {
-        if (err) throw err;
-      });
+      this.cache.add(cacheFilePath, data);
 
       return data;
     }
