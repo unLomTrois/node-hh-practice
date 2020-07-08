@@ -6,57 +6,84 @@ import IO from './io/io.js';
 import Suggest from './suggest.js';
 
 /**
- * @todo транформмировать этот файл в общий класс
+ * Модуль CLI
  */
+class CLI {
+  private io = new IO();
+  private suggest = new Suggest();
+  private cli = new commander.Command();
 
-// иниициализация IO
-const io = new IO();
-
-// инициализация CLI
-const cli = new commander.Command();
-cli.name('node-hh-parser').version('0.6.0');
-
-// инициализация suggest
-const suggest = new Suggest();
-
-// опции
-cli
-  .option(
-    '-a, --area <area-name>',
-    'название территории поиска или индекс',
-    'Россия'
-  )
   /**
-   * @todo расписать возможные состояния
+   * запуск CLI
    */
-  .option('-L, --locale <lang>', 'язык локализации', 'RU');
+  public run = () => {
+    this.initCLI();
 
-cli.option<number>(
-  '-l, --limit <number>',
-  'ограничение по поиску',
-  parseFloat,
-  2000
-);
+    this.cli.parse(process.argv);
+  };
 
-// комманды
-cli
-  .command('search <text>')
-  .description('поиск вакансий по полю text')
-  .action(async (text: string) => {
-    io.search({
-      text: text,
-      area: await suggest.area(cli.area, cli.locale),
-      limit: cli.limit
-    });
-  });
+  /**
+   * инициализация CLI
+   *
+   * инициализируются поля и команды (операции)
+   */
+  private initCLI = () => {
+    this.cli.name('node-hh-parser').version('0.6.0');
 
-cli
-  .command('get-full')
-  .description(
-    'получает полное представление вакансий, полученных в результате вызова команды search'
-  )
-  .action(() => {
-    io.getFull(cli.limit);
-  });
+    this.initCLIOptions();
 
-cli.parse(process.argv);
+    this.initCLICommands();
+  };
+
+  /**
+   * инициализация команд (операций)
+   */
+  private initCLICommands = () => {
+    this.cli
+      .command('search <text>')
+      .description('поиск вакансий по полю text')
+      .action(async (text: string) => {
+        this.io.search({
+          text: text,
+          area: await this.suggest.area(this.cli.area, this.cli.locale),
+          limit: this.cli.limit
+        });
+      });
+
+    this.cli
+      .command('get-full')
+      .description(
+        'получает полное представление вакансий, полученных в результате вызова команды search'
+      )
+      .action(() => {
+        this.io.getFull(this.cli.limit);
+      });
+  };
+
+  /**
+   * инициализация полей (опций)
+   */
+  private initCLIOptions = () => {
+    this.cli
+      .option(
+        '-a, --area <area-name>',
+        'название территории поиска или индекс',
+        'Россия'
+      )
+      /**
+       * @todo расписать возможные состояния
+       */
+      .option('-L, --locale <lang>', 'язык локализации', 'RU');
+
+    this.cli.option<number>(
+      '-l, --limit <number>',
+      'ограничение по поиску',
+      parseFloat,
+      2000
+    );
+  };
+}
+
+const cli = new CLI();
+
+cli.run();
