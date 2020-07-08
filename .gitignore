@@ -1,3 +1,7 @@
-/log
-/node_modules
-/bin
+# application folders
+bin
+log
+cache
+
+# modules
+node_modules
