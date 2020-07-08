@@ -1,4 +1,3 @@
-import { Parser } from '../types/core/module';
 import { API } from '../types/api/module';
 import fetch, { HeadersInit, RequestInit, Response } from 'node-fetch';
 import URLFormatter from './formatter.js';
@@ -14,7 +13,7 @@ import { readFileSync, writeFile, existsSync, mkdirSync } from 'fs';
  */
 
 // Модуль запросов
-class Requests implements Parser.Requests {
+class Requests {
   private formatter: URLFormatter = new URLFormatter();
 
   private hh_headers: HeadersInit = {
@@ -75,9 +74,9 @@ class Requests implements Parser.Requests {
       this.fetchCache(url, { headers: this.hh_headers })
     );
 
-    // дождаться резолва промисов, получить их поля items, заполнить ими новый массив
-    const vacancies: API.Vacancy[] = [].concat(
-      ...(await Promise.all(data)).map((page) => page.items)
+    // дождаться резолва промисов, получить их поля items
+    const vacancies: API.Vacancy[] = (await Promise.all(data)).map(
+      (page) => page.items
     );
 
     return vacancies;
@@ -92,10 +91,6 @@ class Requests implements Parser.Requests {
 
     return vacancies;
   };
-
-  getResumes(): Promise<any[]> {
-    throw new Error('Method not implemented.');
-  }
 
   /**
    * зашифровать строку в хеш md5

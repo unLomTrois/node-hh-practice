@@ -1,8 +1,7 @@
-import { Parser } from '../types/core/module';
 import Requests from './requests.js';
 import { API } from '../types/api/module';
 
-class Core implements Parser.Core {
+class Core {
   private requests: Requests = new Requests();
 
   /**
@@ -27,9 +26,6 @@ class Core implements Parser.Core {
     );
 
     return full_vacancies;
-    // get short_vacancies (vacancies) from log
-    // get array of links to full from short_vacansies
-    // make fetch by each vacancies
   };
 }
 
