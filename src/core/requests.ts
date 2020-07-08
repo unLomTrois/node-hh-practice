@@ -1,5 +1,5 @@
 import { API } from '../types/api/module';
-import fetch, { HeadersInit, RequestInit, Response } from 'node-fetch';
+import fetch, { HeadersInit, RequestInit } from 'node-fetch';
 
 import URLFormatter from './formatter.js';
 import Cache from './cache.js';
@@ -96,7 +96,7 @@ class Requests {
     urls: string[]
   ): Promise<API.FullVacancy[]> => {
     const data: Promise<API.FullVacancy>[] = urls.map((url) =>
-      this.fetchCache(url)
+      this.fetchCache(url, { headers: this.hh_headers })
     );
 
     const full_vacancies: API.FullVacancy[] = await Promise.all(data);
@@ -136,13 +136,10 @@ class Requests {
 
       return data;
     } else {
-      // make new fetch
-      const fetchResponse: Response = await fetch(url, init);
+      // make new fetch and get json
+      const data: any = await fetch(url, init).then((res) => res.json());
 
-      // get json
-      const data: any = await fetchResponse.json();
-
-      // cache response
+      // add data to cache
       this.cache.add(cacheFilePath, data);
 
       return data;
