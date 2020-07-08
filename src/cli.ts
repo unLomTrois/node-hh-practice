@@ -16,8 +16,18 @@ cli
    * @todo сделать suggest-модуль, заменить id-представление на name-представление
    * @link https://trello.com/c/S7mFIRBk
    */
-  .option<number>('-a, --area <area-id>', 'set area', parseFloat, 1)
-  .option<number>('-l, --limit <number>', 'set limit', parseFloat, 100);
+  .option<number>(
+    '-a, --area <area-id>',
+    'индекс территории поиска',
+    parseFloat,
+    1
+  )
+  .option<number>(
+    '-l, --limit <number>',
+    'ограничение по поиску',
+    parseFloat,
+    2000
+  );
 
 // комманды
 cli
@@ -31,6 +41,9 @@ cli
     });
   });
 
+/**
+ * @todo добавить передачу ограничения limit в get-full
+ */
 cli
   .command('get-full')
   .description(
