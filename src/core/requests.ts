@@ -3,19 +3,16 @@ import fetch, { HeadersInit, RequestInit, Response } from 'node-fetch';
 
 import URLFormatter from './formatter.js';
 import Cache from './cache.js';
+import Hash from './hash.js';
 
-import { createHash } from 'crypto';
 import { resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
-
-/**
- * @todo сделать модуль хеширования
- */
 
 // Модуль запросов
 class Requests {
   private formatter: URLFormatter = new URLFormatter();
   private cache: Cache = new Cache();
+  private hash: Hash = new Hash();
 
   private hh_headers: HeadersInit = {
     'User-Agent': 'node-hh-parser (vadim.kuz02@gmail.com)'
@@ -97,9 +94,6 @@ class Requests {
    * зашифровать строку в хеш md5
    * @return string
    */
-  private md5 = (str: string): string => {
-    return createHash('md5').update(str).digest('hex');
-  };
 
   /**
    * делает fetch по @url и @init , либо читая из @cache
@@ -114,7 +108,7 @@ class Requests {
       mkdirSync(cahceDirPath);
     }
 
-    const cacheHash: string = this.md5(JSON.stringify(url));
+    const cacheHash: string = this.hash.md5(url);
     const cacheFilePath: string = resolve(
       process.cwd(),
       cahceDirPath,
