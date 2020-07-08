@@ -16,12 +16,12 @@ class Core {
 
   public getFullVacancies = async (
     short_vacancies: API.Vacancy[]
-  ): Promise<API.Vacancy[]> => {
+  ): Promise<API.FullVacancy[]> => {
     // получить поля url
     const urls: string[] = short_vacancies.map((vac) => vac.url);
 
     // профетчить полученный массив url-ов через модуль запросов
-    const full_vacancies: API.Vacancy[] = await this.requests.getFullVacancies(
+    const full_vacancies: API.FullVacancy[] = await this.requests.getFullVacancies(
       urls
     );
 

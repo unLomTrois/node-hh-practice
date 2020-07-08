@@ -8,13 +8,6 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 /**
- * @name TODO
- * @todo написать интерфейс
- * @todo заменить прямое использование Core API-интерфейсом
- * @link https://trello.com/c/l6yrLNv0
- */
-
-/**
  * Модуль IO
  * @link https://trello.com/c/oFJsCDZK
  */
@@ -39,7 +32,7 @@ class IO {
     /**
      * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
      */
-    const full_vacancies: API.Vacancy[] = await this.getFullVacancies(
+    const full_vacancies: API.FullVacancy[] = await this.getFullVacancies(
       short_vacancies
     );
 
@@ -48,7 +41,7 @@ class IO {
 
   private getFullVacancies = async (
     short_vacancies: API.Vacancy[]
-  ): Promise<API.Vacancy[]> => this.core.getFullVacancies(short_vacancies);
+  ): Promise<API.FullVacancy[]> => this.core.getFullVacancies(short_vacancies);
 
   /**
    * делает серии запросов по request
@@ -72,16 +65,13 @@ class IO {
    * сохраняет собранные вакансии
    * @param vacancies - API.Vacancies
    */
-  private saveVacancies = (vacancies: API.Vacancy[]): void =>
-    this.save.add(vacancies);
+  private saveVacancies = (vacancies: API.Vacancy[]): void => {
+    return this.save.add(vacancies);
+  };
 
-  private saveFullVacancies = (vacancies: API.Vacancy[]): void =>
+  private saveFullVacancies = (vacancies: API.FullVacancy[]): void =>
     this.save.add(vacancies, './log', 'full_vacancies.json');
 
-  /**
-   * получает вакансии из папки log
-   * @todo сделать async-модуль чтения и записи
-   */
   private getVacanciesFromLog = (): API.Vacancy[] => {
     const log_dir_path = './log';
 

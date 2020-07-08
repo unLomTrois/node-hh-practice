@@ -81,13 +81,13 @@ class Requests {
   };
 
   public getFullVacancies = async (urls: string[]): Promise<API.Vacancy[]> => {
-    const data: Promise<API.Vacancy>[] = urls.map((url) =>
+    const data: Promise<API.FullVacancy>[] = urls.map((url) =>
       this.fetchCache(url)
     );
 
-    const vacancies: API.Vacancy[] = await Promise.all(data);
+    const full_vacancies: API.FullVacancy[] = await Promise.all(data);
 
-    return vacancies;
+    return full_vacancies;
   };
 
   /**

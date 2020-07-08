@@ -71,6 +71,7 @@ export namespace API {
    * вакансия
    */
   export type Vacancy = any;
+  export type FullVacancy = any;
 
   /// Not used
   export interface Response {
