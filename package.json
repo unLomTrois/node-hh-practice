@@ -1,6 +1,6 @@
 {
-  "name": "node-fetch-hh",
-  "version": "0.4.0",
+  "name": "node-hh-parser",
+  "version": "0.6.0",
   "bin": "bin/cli.js",
   "description": "",
   "private": true,

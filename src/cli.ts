@@ -14,7 +14,7 @@ const io = new IO();
 
 // инициализация CLI
 const cli = new commander.Command();
-cli.name('node-hh-parsevr').version('0.4.0');
+cli.name('node-hh-parser').version('0.6.0');
 
 // инициализация suggest
 const suggest = new Suggest();
