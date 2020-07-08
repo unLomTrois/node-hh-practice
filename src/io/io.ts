@@ -30,14 +30,15 @@ class IO {
   /**
    * Получает и сохраняет массивы полного представления вакансий
    */
-  public getFull = async (): Promise<void> => {
+  public getFull = async (limit = 2000): Promise<void> => {
     const short_vacancies = this.getVacanciesFromLog();
 
     /**
      * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
      */
     const full_vacancies: API.FullVacancy[] = await this.getFullVacancies(
-      short_vacancies
+      short_vacancies,
+      limit
     );
 
     this.saveFullVacancies(full_vacancies);
@@ -50,8 +51,10 @@ class IO {
    * @param short_vacancies - массив из объектов API.Vacancy
    */
   private getFullVacancies = async (
-    short_vacancies: API.Vacancy[]
-  ): Promise<API.FullVacancy[]> => this.core.getFullVacancies(short_vacancies);
+    short_vacancies: API.Vacancy[],
+    limit: number
+  ): Promise<API.FullVacancy[]> =>
+    this.core.getFullVacancies(short_vacancies, limit);
 
   /**
    * запрашиват из Core вакансии по запросу @request

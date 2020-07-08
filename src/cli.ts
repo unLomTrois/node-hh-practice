@@ -41,16 +41,13 @@ cli
     });
   });
 
-/**
- * @todo добавить передачу ограничения limit в get-full
- */
 cli
   .command('get-full')
   .description(
     'получает полное представление вакансий, полученных в результате вызова команды search'
   )
   .action(() => {
-    io.getFull();
+    io.getFull(cli.limit);
   });
 
 cli.parse(process.argv);
