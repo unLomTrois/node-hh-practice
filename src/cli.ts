@@ -43,7 +43,8 @@ class CLI {
         this.io.search({
           text: text,
           area: this.cli.area, //await this.suggest.area(this.cli.area, this.cli.locale),
-          limit: this.cli.limit
+          limit: this.cli.limit,
+          cluster: this.cli.cluster ?? false
         });
       });
 
@@ -79,6 +80,8 @@ class CLI {
        * @todo расписать возможные состояния
        */
       .option('-L, --locale <lang>', 'язык локализации', 'RU');
+
+    this.cli.option('-C, --cluster').description('скачивание кластеров');
 
     this.cli.option<number>(
       '-l, --limit <number>',

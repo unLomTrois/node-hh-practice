@@ -39,23 +39,21 @@ class Requests {
     return data.found;
   };
 
+  // public getClusters = async (query: API.Query): Promise<API.Vacancy[]> => {};
+
   /**
    * асинхронно делает запросы на REST API, возвращает массив вакансий
    * @param query - запрос, объект типа API.Query
    * @param limit - ограничение по количеству требуемых к выдаче вакансий
    */
   public getVacancies = async (
-    query: API.Query,
+    base_api_url: API.URL,
     limit = 2000
   ): Promise<API.Vacancy[]> => {
-    const base_api_url: API.URL = {
-      baseURL: 'https://api.hh.ru',
-      method: '/vacancies',
-      query: query
-    };
-
     // получить строчное представление url
     const base_url = this.formatter.getURL(base_api_url);
+
+    console.log(base_url);
 
     // общее число найденных вакансий
     const found: number = await this.getFound(base_url);
@@ -180,15 +178,11 @@ class Requests {
     );
 
     if (existsSync(cacheFilePath)) {
-      console.log('read cache');
-
       // read from cache
       const data: any = this.cache.get(cacheFilePath);
 
       return data;
     } else {
-      console.log('make new fetch');
-
       // make new fetch and get json
       const data: any = await fetch(url, init).then((res) => res.json());
 

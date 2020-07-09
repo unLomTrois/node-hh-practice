@@ -46,6 +46,7 @@ export namespace API {
     currency?: currency;
     order_by?: order_by;
     search_field?: search_field;
+    clusters?: boolean;
   }
 
   /// URL

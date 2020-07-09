@@ -3,5 +3,6 @@ export namespace IO {
     text: string;
     area: number;
     limit: number;
+    cluster: boolean;
   }
 }

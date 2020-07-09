@@ -20,11 +20,30 @@ class IO {
    * @param request - объект IO.Request
    */
   public search = async (request: IO.Request): Promise<void> => {
+    const query: API.Query = {
+      no_magic: true,
+      per_page: 100,
+      page: 0,
+      area: request.area,
+      text: request.text
+    };
+
+    const base_api_url: API.URL = {
+      baseURL: 'https://api.hh.ru',
+      method: '/vacancies',
+      query: query
+    };
+
     // получить вакансии
-    const vacancies: API.Vacancy[] = await this.getVacancies(request);
+    const vacancies: API.Vacancy[] = await this.getVacancies(
+      base_api_url,
+      request.limit
+    );
 
     // сохранить собранные вакансии
     this.saveVacancies(vacancies, 'vacancies.json');
+
+    // cluster part
   };
 
   /**
@@ -70,17 +89,11 @@ class IO {
    * возвращает массив из API.Vacancy, не превышающий 2000 объектов
    * @param request - объект IO.Request
    */
-  private getVacancies = (request: IO.Request): Promise<API.Vacancy[]> => {
-    return this.core.getVacancies(
-      {
-        no_magic: true,
-        per_page: 100,
-        page: 0,
-        area: request.area,
-        text: request.text
-      },
-      request.limit
-    );
+  private getVacancies = (
+    url: API.URL,
+    limit: number
+  ): Promise<API.Vacancy[]> => {
+    return this.core.getVacancies(url, limit);
   };
 
   /**

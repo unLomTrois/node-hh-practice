@@ -66,10 +66,10 @@ class Core {
    * @param limit - ограничение по количеству требуемых к выдаче вакансий
    */
   public getVacancies = async (
-    query: API.Query,
+    url: API.URL,
     limit: number
   ): Promise<API.Vacancy[]> => {
-    return this.requests.getVacancies(query, limit);
+    return this.requests.getVacancies(url, limit);
   };
 
   /**
