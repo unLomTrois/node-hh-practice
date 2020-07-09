@@ -24,7 +24,7 @@ class IO {
     const vacancies: API.Vacancy[] = await this.getVacancies(request);
 
     // сохранить собранные вакансии
-    this.saveVacancies(vacancies);
+    this.saveVacancies(vacancies, 'vacancies.json');
   };
 
   /**
@@ -41,7 +41,15 @@ class IO {
       limit
     );
 
-    this.saveFullVacancies(full_vacancies);
+    this.saveVacancies(full_vacancies, 'full_vacancies.json');
+  };
+
+  public analyze = async (): Promise<void> => {
+    const full_vacancies = this.getFullVacanciesFromLog();
+
+    const analyzed_vacancies = this.core.analyze(full_vacancies);
+
+    this.saveVacancies(await analyzed_vacancies, 'analyzed_vacancies.json');
   };
 
   /**
@@ -79,16 +87,12 @@ class IO {
    * сохраняет собранные вакансии
    * @param vacancies - API.Vacancies
    */
-  private saveVacancies = (vacancies: API.Vacancy[]): void => {
-    return this.save.add(vacancies);
+  private saveVacancies = (
+    vacancies: API.Vacancy[],
+    logfilename: string
+  ): void => {
+    return this.save.add(vacancies, 'log', logfilename);
   };
-
-  /**
-   * сохраняет полное представление вакансий через Save
-   * @param vacancies - массив из API.FullVacancy
-   */
-  private saveFullVacancies = (vacancies: API.FullVacancy[]): void =>
-    this.save.add(vacancies, './log', 'full_vacancies.json');
 
   /**
    * получает массив вакансий из папки log
@@ -98,6 +102,25 @@ class IO {
 
     // предполагаем, что файл сокращённых вакансий - vacancies.json
     const log_file_name = 'vacancies.json';
+
+    const path = resolve(process.cwd(), log_dir_path, log_file_name);
+
+    // short_vacancies
+    const data: API.Vacancy[] = JSON.parse(
+      readFileSync(path, { encoding: 'utf-8' })
+    );
+
+    return data;
+  };
+
+  /**
+   * получает массив полных вакансий из папки log
+   */
+  private getFullVacanciesFromLog = (): API.FullVacancy[] => {
+    const log_dir_path = './log';
+
+    // предполагаем, что файл сокращённых вакансий - vacancies.json
+    const log_file_name = 'full_vacancies.json';
 
     const path = resolve(process.cwd(), log_dir_path, log_file_name);
 

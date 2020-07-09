@@ -55,6 +55,13 @@ class CLI {
       .action(() => {
         this.io.getFull(this.cli.limit);
       });
+
+    this.cli
+      .command('analyze')
+      .description('проанализировать полученные данные')
+      .action(() => {
+        this.io.analyze();
+      });
   };
 
   /**

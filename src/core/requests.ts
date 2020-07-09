@@ -108,6 +108,18 @@ class Requests {
   };
 
   /**
+   * получение валют
+   */
+  public getCurrency = async (
+    linkToCurrencies: string,
+    currency = 'USD'
+  ): Promise<number> => {
+    const currency_json = await this.fetchCacheCurrency(linkToCurrencies);
+
+    return currency_json.Valute[currency].Value;
+  };
+
+  /**
    * Проверяет на наличие кеша от предыдущих вызовов.
    *
    * Если кеш есть, читает информацию из него.
@@ -139,6 +151,44 @@ class Requests {
 
       return data;
     } else {
+      // make new fetch and get json
+      const data: any = await fetch(url, init).then((res) => res.json());
+
+      // add data to cache
+      this.cache.add(cacheFilePath, data);
+
+      return data;
+    }
+  };
+
+  private fetchCacheCurrency = async (
+    url: string,
+    init?: RequestInit
+  ): Promise<any> => {
+    const cahceDirPath = './cache';
+    if (!existsSync(cahceDirPath)) {
+      mkdirSync(cahceDirPath);
+    }
+
+    const today_date: string = new Date().toISOString().split('T')[0];
+    const today_date_hash: string = this.hash.md5(today_date);
+
+    const cacheFilePath: string = resolve(
+      process.cwd(),
+      cahceDirPath,
+      `${today_date_hash}`
+    );
+
+    if (existsSync(cacheFilePath)) {
+      console.log('read cache');
+
+      // read from cache
+      const data: any = this.cache.get(cacheFilePath);
+
+      return data;
+    } else {
+      console.log('make new fetch');
+
       // make new fetch and get json
       const data: any = await fetch(url, init).then((res) => res.json());
 

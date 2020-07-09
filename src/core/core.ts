@@ -1,8 +1,64 @@
 import Requests from './requests.js';
 import { API } from '../types/api/module';
 
+// import d3 from 'd3-array';
+
+class CurrencyConverter {
+  private requests: Requests = new Requests();
+  private currencyRatesRUBtoUSD: number | undefined;
+  private linkToCurrencies = 'https://www.cbr-xml-daily.ru/daily_json.js';
+
+  constructor() {
+    this.getCurrency();
+  }
+
+  public getCurrency = async () => {
+    this.currencyRatesRUBtoUSD = await this.requests.getCurrency(
+      this.linkToCurrencies
+    );
+  };
+
+  public convertRUBtoUSD = async (rub: number): Promise<number> => {
+    return (
+      rub /
+      (this.currencyRatesRUBtoUSD ??
+        (await this.requests.getCurrency(this.linkToCurrencies)))
+    );
+  };
+}
+
+class Analyzer {
+  private converter: CurrencyConverter = new CurrencyConverter();
+
+  public start = async (
+    full_vacancies: API.FullVacancy[]
+  ): Promise<API.FullVacancy[]> => {
+    console.log(await this.converter.convertRUBtoUSD(47000));
+
+    // массив вакансий с указанной ЗП
+    const with_salary: API.FullVacancy[] = full_vacancies.filter(
+      (vac) => vac.salary !== null
+    );
+    // console.log('with set salary', with_salary.length);
+
+    const with_salary_limit: API.FullVacancy[] = with_salary.filter(
+      (vac) => vac.salary.from !== null && vac.salary.to !== null
+    );
+
+    // console.log('with limit:', with_salary_limit.length);
+
+    with_salary_limit.sort(
+      (vac1: API.FullVacancy, vac2: API.FullVacancy) =>
+        vac2.salary.to - vac1.salary.to
+    );
+
+    return with_salary_limit;
+  };
+}
+
 class Core {
   private requests: Requests = new Requests();
+  private analyzer: Analyzer = new Analyzer();
 
   /**
    * запрашивает списки вакансий из Request-модуля, возвращает их
@@ -35,6 +91,12 @@ class Core {
     );
 
     return full_vacancies;
+  };
+
+  public analyze = async (
+    full_vacancies: API.FullVacancy[]
+  ): Promise<API.FullVacancy[]> => {
+    return this.analyzer.start(full_vacancies);
   };
 
   /**
