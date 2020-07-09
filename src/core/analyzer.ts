@@ -6,6 +6,8 @@ type SalaryCluster = any[];
 
 type ExperienceCluster = any[];
 
+type EmploymentCluster = any[];
+
 import d3 from 'd3-array';
 
 /**
@@ -28,12 +30,31 @@ class Analyzer {
     const experience_cluster: ExperienceCluster =
       prepared_clusters.clusters.experience.items;
 
+    const employment_cluster: EmploymentCluster =
+      prepared_clusters.clusters.employment.items;
+
     const analyzed_data: API.AnalyzedData = {
       salary_info: this.analyzeSalary(salary_cluster, found),
-      experience_info: this.analyzeExperience(experience_cluster, found)
+      experience_info: this.analyzeExperience(experience_cluster, found),
+      employment_info: this.analyzeEmployment(employment_cluster, found)
     };
 
     return analyzed_data;
+  };
+
+  private analyzeEmployment = (
+    employment_cluster: EmploymentCluster,
+    found: number
+  ): analyzedInfo => {
+    const groups: any[] = employment_cluster.map((part) => {
+      delete part.url;
+
+      part.ratio = parseFloat(((part.count / found) * 100).toFixed(2));
+
+      return part;
+    });
+
+    return groups;
   };
 
   private analyzeExperience = (
