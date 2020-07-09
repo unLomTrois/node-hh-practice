@@ -7,6 +7,7 @@ import Hash from './hash.js';
 
 import { resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+// import { URL } from 'url';
 
 // Модуль запросов
 class Requests {
@@ -27,8 +28,10 @@ class Requests {
     // чтобы не получать ненужные данные
     url = url.replace(/per_page=(100)|[0-9]\d?/, 'per_page=0');
 
+    console.log(encodeURI(url));
+
     // сделать запрос и дождаться json-представления
-    const data: any = await fetch(url, {
+    const data: any = await fetch(encodeURI(url), {
       headers: this.hh_headers
     }).then((res) => res.json());
 
@@ -77,7 +80,7 @@ class Requests {
 
     // сделать серию ассинхронных запросов, получить promise представления json
     const data: Promise<API.Vacancy>[] = urls.map((url) =>
-      this.fetchCache(url, { headers: this.hh_headers })
+      this.fetchCache(encodeURI(url), { headers: this.hh_headers })
     );
 
     // дождаться резолва промисов, получить их поля items

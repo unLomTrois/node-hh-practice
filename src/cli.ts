@@ -3,14 +3,11 @@
 import commander from 'commander';
 import IO from './io/io.js';
 
-import Suggest from './suggest.js';
-
 /**
  * Модуль CLI
  */
 class CLI {
   private io = new IO();
-  private suggest = new Suggest();
   private cli = new commander.Command();
 
   /**
@@ -45,7 +42,7 @@ class CLI {
       .action(async (text: string) => {
         this.io.search({
           text: text,
-          area: await this.suggest.area(this.cli.area, this.cli.locale),
+          area: this.cli.area, //await this.suggest.area(this.cli.area, this.cli.locale),
           limit: this.cli.limit
         });
       });
@@ -65,10 +62,11 @@ class CLI {
    */
   private initCLIOptions = () => {
     this.cli
-      .option(
+      .option<number>(
         '-a, --area <area-name>',
         'название территории поиска или индекс',
-        'Россия'
+        parseFloat,
+        1624
       )
       /**
        * @todo расписать возможные состояния

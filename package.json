@@ -20,7 +20,8 @@
     "url": "https://github.com/unLomTrois"
   },
   "devDependencies": {
-    "@types/commander": "^2.12.2",
+    "@types/d3-array": "^2.0.0",
+    "@types/listr": "^0.14.2",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
@@ -32,6 +33,8 @@
   },
   "dependencies": {
     "commander": "^5.1.0",
+    "d3-array": "^2.4.0",
+    "listr": "^0.14.3",
     "node-fetch": "^2.6.0"
   },
   "repository": {
