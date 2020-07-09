@@ -1,43 +1,13 @@
 import Requests from './requests.js';
+import Analyzer from './analyzer.js';
+import Prepare from './prepare.js';
+
 import { API } from '../types/api/module';
-
-// import d3 from 'd3-array';
-
-class Analyzer {
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // private converter: CurrencyConverter = new CurrencyConverter();
-
-  public prepare = async (
-    full_vacancies: API.FullVacancy[]
-  ): Promise<API.PreparedVacancy[]> => {
-    // нам важны поля key_skills
-    const prepared_vacancies = full_vacancies.map((vac: API.FullVacancy) => {
-      return {
-        id: vac.id,
-        name: vac.name,
-        area: vac.area,
-        key_skills: vac.key_skills,
-        has_test: vac.has_test,
-        test: vac.test,
-        billing_type: vac.billing_type,
-        accept_incomplete_resumes: vac.accept_incomplete_resumes
-      };
-    });
-
-    return prepared_vacancies;
-  };
-
-  // public start = async (
-  //   full_vacancies: API.FullVacancy[]
-  // ): Promise<API.FullVacancy[]> => {
-  //   console.log(await this.converter.convertRUBtoUSD(47000));
-
-  // };
-}
 
 class Core {
   private requests: Requests = new Requests();
   private analyzer: Analyzer = new Analyzer();
+  private prepare: Prepare = new Prepare();
 
   /**
    * запрашивает списки вакансий из Request-модуля, возвращает их
@@ -77,15 +47,22 @@ class Core {
   };
 
   public analyze = async (
-    full_vacancies: API.FullVacancy[]
-  ): Promise<API.FullVacancy[]> => {
-    return full_vacancies; //this.analyzer.start(full_vacancies);
+    prepared_vacancies: API.PreparedVacancy[],
+    prepared_clusters: API.PreparedClusters
+  ): Promise<API.AnalyzedData> => {
+    return this.analyzer.analyze(prepared_vacancies, prepared_clusters);
   };
 
-  public prepare = async (
+  public prepareVacancies = async (
     full_vacancies: API.FullVacancy[]
   ): Promise<API.PreparedVacancy[]> => {
-    return this.analyzer.prepare(full_vacancies);
+    return this.prepare.prepareVacancies(full_vacancies);
+  };
+
+  public prepareClusters = async (
+    full_vacancies: API.Clusters
+  ): Promise<API.PreparedClusters> => {
+    return this.prepare.prepareClusters(full_vacancies);
   };
 
   /**

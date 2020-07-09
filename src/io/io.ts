@@ -13,7 +13,7 @@ import { resolve } from 'path';
  */
 class IO {
   private core = new Core();
-  private save = new Save();
+  private _save = new Save();
 
   /**
    * находит, получает и сохраняет массивы вакансий по @request
@@ -42,7 +42,7 @@ class IO {
     );
 
     // сохранить собранные вакансии
-    this.saveVacancies(vacancies, 'vacancies.json');
+    this.save(vacancies, 'vacancies.json');
 
     // cluster part
     if (request.cluster) {
@@ -60,7 +60,7 @@ class IO {
       );
 
       // сохранить собранные вакансии
-      this.saveVacancies(vacancies_clusters, 'clusters.json');
+      this.save(vacancies_clusters, 'clusters.json');
     }
   };
 
@@ -68,7 +68,7 @@ class IO {
    * Получает и сохраняет массивы полного представления вакансий
    */
   public getFull = async (limit = 2000): Promise<void> => {
-    const short_vacancies = this.getVacanciesFromLog();
+    const short_vacancies = this.getFromLog('vacancies.json');
 
     /**
      * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
@@ -78,26 +78,44 @@ class IO {
       limit
     );
 
-    this.saveVacancies(full_vacancies, 'full_vacancies.json');
+    this.save(full_vacancies, 'full_vacancies.json');
   };
 
-  /**
-   * @todo оно ничего не должно возвращать, только анализировать
-   */
   public analyze = async (): Promise<void> => {
-    const full_vacancies = this.getFullVacanciesFromLog();
+    const prepared_vacancies: API.PreparedVacancy[] = this.getFromLog(
+      'prepared_vacancies.json'
+    );
 
-    const analyzed_vacancies = await this.core.analyze(full_vacancies);
+    const prepared_clusters: API.PreparedClusters = this.getFromLog(
+      'prepared_clusters.json'
+    );
 
-    this.saveVacancies(analyzed_vacancies, 'analyzed_vacancies.json');
+    const analyzed_data = await this.core.analyze(
+      prepared_vacancies,
+      prepared_clusters
+    );
+
+    this.save(analyzed_data, 'analyzed_data.json');
   };
 
   public prepare = async (): Promise<void> => {
-    const full_vacancies = this.getFullVacanciesFromLog();
+    // RAW data
+    const full_vacancies: API.FullVacancy[] = this.getFromLog(
+      'full_vacancies.json'
+    );
+    const clusters: API.Clusters = this.getFromLog('clusters.json');
 
-    const prepared_vacancies = await this.core.prepare(full_vacancies);
+    // prepared data
+    const prepared_vacancies: API.PreparedVacancy[] = await this.core.prepareVacancies(
+      full_vacancies
+    );
 
-    this.saveVacancies(prepared_vacancies, 'prepared_vacancies.json');
+    const prepared_clusters: API.PreparedClusters = await this.core.prepareClusters(
+      clusters
+    );
+
+    this.save(prepared_vacancies, 'prepared_vacancies.json');
+    this.save(prepared_clusters, 'prepared_clusters.json');
   };
 
   /**
@@ -133,40 +151,15 @@ class IO {
    * сохраняет собранные вакансии
    * @param vacancies - API.Vacancies
    */
-  private saveVacancies = (
-    vacancies: API.Vacancy[],
-    logfilename: string
-  ): void => {
-    return this.save.add(vacancies, 'log', logfilename);
+  private save = (someToSave: any, logfilename: string): void => {
+    return this._save.add(someToSave, 'log', logfilename);
   };
 
   /**
-   * получает массив вакансий из папки log
+   * получает массив вакансий c названием log_file_name из папки log
    */
-  private getVacanciesFromLog = (): API.Vacancy[] => {
+  private getFromLog = (log_file_name: string): API.Vacancy[] => {
     const log_dir_path = './log';
-
-    // предполагаем, что файл сокращённых вакансий - vacancies.json
-    const log_file_name = 'vacancies.json';
-
-    const path = resolve(process.cwd(), log_dir_path, log_file_name);
-
-    // short_vacancies
-    const data: API.Vacancy[] = JSON.parse(
-      readFileSync(path, { encoding: 'utf-8' })
-    );
-
-    return data;
-  };
-
-  /**
-   * получает массив полных вакансий из папки log
-   */
-  private getFullVacanciesFromLog = (): API.FullVacancy[] => {
-    const log_dir_path = './log';
-
-    // предполагаем, что файл сокращённых вакансий - vacancies.json
-    const log_file_name = 'full_vacancies.json';
 
     const path = resolve(process.cwd(), log_dir_path, log_file_name);
 
