@@ -8,6 +8,12 @@ type ExperienceCluster = any[];
 
 type EmploymentCluster = any[];
 
+type ScheduleCluster = any[];
+
+type IndustryCluster = any[];
+
+type SimpleCluster = EmploymentCluster | ScheduleCluster | IndustryCluster;
+
 import d3 from 'd3-array';
 
 /**
@@ -18,8 +24,11 @@ class Analyzer {
     prepared_vacancies: API.PreparedVacancy[],
     prepared_clusters: API.PreparedClusters
   ): Promise<API.AnalyzedData> => {
-    prepared_vacancies;
-    prepared_clusters;
+    // обработка вакансий
+
+    const rated_skills = this.rateKeySkills(prepared_vacancies);
+
+    // обработка кластеров
 
     // всего вакансий
     const found: number = prepared_clusters.found;
@@ -33,20 +42,36 @@ class Analyzer {
     const employment_cluster: EmploymentCluster =
       prepared_clusters.clusters.employment.items;
 
+    const schedule_cluster: ScheduleCluster =
+      prepared_clusters.clusters.schedule.items;
+
+    const industry_cluster: IndustryCluster =
+      prepared_clusters.clusters.industry.items;
+
     const analyzed_data: API.AnalyzedData = {
-      salary_info: this.analyzeSalary(salary_cluster, found),
-      experience_info: this.analyzeExperience(experience_cluster, found),
-      employment_info: this.analyzeEmployment(employment_cluster, found)
+      analyzed_clusters: {
+        salary_info: this.analyzeSalaryCluster(salary_cluster, found),
+        experience_info: this.analyzeExperienceCluster(
+          experience_cluster,
+          found
+        ),
+        employment_info: this.analyzeSimpleCluster(employment_cluster, found),
+        schedule_info: this.analyzeSimpleCluster(schedule_cluster, found),
+        industry_info: this.analyzeSimpleCluster(industry_cluster, found)
+      },
+      analyzed_vacancies: {
+        key_skills: rated_skills
+      }
     };
 
     return analyzed_data;
   };
 
-  private analyzeEmployment = (
-    employment_cluster: EmploymentCluster,
+  private analyzeSimpleCluster = (
+    simple_cluster: SimpleCluster,
     found: number
   ): analyzedInfo => {
-    const groups: any[] = employment_cluster.map((part) => {
+    const groups: any[] = simple_cluster.map((part) => {
       delete part.url;
 
       part.ratio = parseFloat(((part.count / found) * 100).toFixed(2));
@@ -57,7 +82,7 @@ class Analyzer {
     return groups;
   };
 
-  private analyzeExperience = (
+  private analyzeExperienceCluster = (
     experience_cluster: ExperienceCluster,
     found: number
   ): analyzedInfo => {
@@ -96,7 +121,7 @@ class Analyzer {
     return groups;
   };
 
-  private analyzeSalary = (
+  private analyzeSalaryCluster = (
     salary_cluster: SalaryCluster,
     found: number
   ): analyzedInfo => {
@@ -125,6 +150,41 @@ class Analyzer {
       specified_ratio: parseFloat((specified / found).toFixed(2)), // отношение всех вакансий к количеству с указнной зп
       borders
     };
+  };
+
+  private rateKeySkills = (
+    prepared_vacancies: API.PreparedVacancy[]
+  ): analyzedInfo[] => {
+    const key_skills: string[] = [].concat(
+      ...prepared_vacancies.map((vac) =>
+        vac.key_skills.map((key_list: { name: any }) => key_list.name)
+      )
+    );
+
+    // const unique_key_skills = Array.from(new Set(key_skills));
+    // заполняем объект полями пар названия и количества
+    const result: any = {};
+    key_skills.forEach((skill) => {
+      result[skill] = (result[skill] || 0) + 1;
+    });
+
+    const weighed_skills = Object.entries<number>(result)
+      .map((arr) => {
+        return {
+          name: arr[0],
+          count: arr[1],
+          ratio: parseFloat(((arr[1] / key_skills.length) * 100).toFixed(2))
+        };
+      })
+      .sort((skill_1, skill_2) =>
+        skill_1.count < skill_2.count
+          ? 1
+          : skill_2.count < skill_1.count
+          ? -1
+          : 0
+      );
+
+    return weighed_skills;
   };
 }
 
