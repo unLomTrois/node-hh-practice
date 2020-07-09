@@ -65,8 +65,6 @@ class Requests {
     // общее число найденных вакансий
     const found: number = await this.getFound(base_url);
 
-    console.log('found:', found, 'vacancies');
-
     // получаем количество элементов на страницу
     const per_page: number = base_api_url.query.per_page ?? 100;
 
@@ -74,7 +72,6 @@ class Requests {
     const pages: number = Math.ceil(
       (found <= limit ? found : limit) / per_page
     );
-    console.log('parsed pages:', pages);
 
     // сгенерировать массив ссылок числом pages, с пагинацией page
     const urls: string[] = Array.from(

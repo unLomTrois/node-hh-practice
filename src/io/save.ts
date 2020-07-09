@@ -22,8 +22,7 @@ class Save {
       mkdirSync(logdirname);
     }
 
-    // получение информации промиса
-    console.log(`${vacancies.length} vacancies have parsed`);
+    // console.log(`${vacancies.length} vacancies have parsed`);
 
     // получить путь для сохранения
     const log_path = resolve(process.cwd(), logdirname, logfilename);
@@ -31,7 +30,7 @@ class Save {
     // сохранить вакансии
     writeFile(log_path, JSON.stringify(vacancies, undefined, 2), (err) => {
       if (err) throw err;
-      console.log('completely saved');
+      // console.log('completely saved');
     });
   };
 }

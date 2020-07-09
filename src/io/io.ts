@@ -52,8 +52,6 @@ class IO {
 
       clusters_api_url.query.clusters = true;
 
-      console.log('clusters_api:', clusters_api_url);
-
       // получить вакансии
       const vacancies_clusters: API.Vacancy[] = await this.getClusters(
         clusters_api_url
