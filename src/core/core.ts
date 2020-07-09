@@ -3,30 +3,6 @@ import { API } from '../types/api/module';
 
 // import d3 from 'd3-array';
 
-// class CurrencyConverter {
-//   private requests: Requests = new Requests();
-//   private currencyRatesRUBtoUSD: number | undefined;
-//   private linkToCurrencies = 'https://www.cbr-xml-daily.ru/daily_json.js';
-
-//   constructor() {
-//     this.getCurrency();
-//   }
-
-//   public getCurrency = async () => {
-//     this.currencyRatesRUBtoUSD = await this.requests.getCurrency(
-//       this.linkToCurrencies
-//     );
-//   };
-
-//   public convertRUBtoUSD = async (rub: number): Promise<number> => {
-//     return (
-//       rub /
-//       (this.currencyRatesRUBtoUSD ??
-//         (await this.requests.getCurrency(this.linkToCurrencies)))
-//     );
-//   };
-// }
-
 class Analyzer {
   // // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // private converter: CurrencyConverter = new CurrencyConverter();
