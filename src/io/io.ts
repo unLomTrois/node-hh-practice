@@ -25,7 +25,8 @@ class IO {
       per_page: 100,
       page: 0,
       area: request.area,
-      text: request.text
+      text: request.text,
+      order_by: 'salary_desc'
     };
 
     const base_api_url: API.URL = {
@@ -44,6 +45,23 @@ class IO {
     this.saveVacancies(vacancies, 'vacancies.json');
 
     // cluster part
+    if (request.cluster) {
+      const clusters_api_url: API.URL = JSON.parse(
+        JSON.stringify(base_api_url)
+      );
+
+      clusters_api_url.query.clusters = true;
+
+      console.log('clusters_api:', clusters_api_url);
+
+      // получить вакансии
+      const vacancies_clusters: API.Vacancy[] = await this.getClusters(
+        clusters_api_url
+      );
+
+      // сохранить собранные вакансии
+      this.saveVacancies(vacancies_clusters, 'clusters.json');
+    }
   };
 
   /**
@@ -63,12 +81,23 @@ class IO {
     this.saveVacancies(full_vacancies, 'full_vacancies.json');
   };
 
+  /**
+   * @todo оно ничего не должно возвращать, только анализировать
+   */
   public analyze = async (): Promise<void> => {
     const full_vacancies = this.getFullVacanciesFromLog();
 
-    const analyzed_vacancies = this.core.analyze(full_vacancies);
+    const analyzed_vacancies = await this.core.analyze(full_vacancies);
 
-    this.saveVacancies(await analyzed_vacancies, 'analyzed_vacancies.json');
+    this.saveVacancies(analyzed_vacancies, 'analyzed_vacancies.json');
+  };
+
+  public prepare = async (): Promise<void> => {
+    const full_vacancies = this.getFullVacanciesFromLog();
+
+    const prepared_vacancies = await this.core.prepare(full_vacancies);
+
+    this.saveVacancies(prepared_vacancies, 'prepared_vacancies.json');
   };
 
   /**
@@ -94,6 +123,10 @@ class IO {
     limit: number
   ): Promise<API.Vacancy[]> => {
     return this.core.getVacancies(url, limit);
+  };
+
+  private getClusters = (url: API.URL): Promise<any> => {
+    return this.core.getClusters(url);
   };
 
   /**

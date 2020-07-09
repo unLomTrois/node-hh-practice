@@ -58,6 +58,13 @@ class CLI {
       });
 
     this.cli
+      .command('prepare')
+      .description('подготовить полные вакансии, очистить их от ненужных полей')
+      .action(() => {
+        this.io.prepare();
+      });
+
+    this.cli
       .command('analyze')
       .description('проанализировать полученные данные')
       .action(() => {

@@ -3,57 +3,60 @@ import { API } from '../types/api/module';
 
 // import d3 from 'd3-array';
 
-class CurrencyConverter {
-  private requests: Requests = new Requests();
-  private currencyRatesRUBtoUSD: number | undefined;
-  private linkToCurrencies = 'https://www.cbr-xml-daily.ru/daily_json.js';
+// class CurrencyConverter {
+//   private requests: Requests = new Requests();
+//   private currencyRatesRUBtoUSD: number | undefined;
+//   private linkToCurrencies = 'https://www.cbr-xml-daily.ru/daily_json.js';
 
-  constructor() {
-    this.getCurrency();
-  }
+//   constructor() {
+//     this.getCurrency();
+//   }
 
-  public getCurrency = async () => {
-    this.currencyRatesRUBtoUSD = await this.requests.getCurrency(
-      this.linkToCurrencies
-    );
-  };
+//   public getCurrency = async () => {
+//     this.currencyRatesRUBtoUSD = await this.requests.getCurrency(
+//       this.linkToCurrencies
+//     );
+//   };
 
-  public convertRUBtoUSD = async (rub: number): Promise<number> => {
-    return (
-      rub /
-      (this.currencyRatesRUBtoUSD ??
-        (await this.requests.getCurrency(this.linkToCurrencies)))
-    );
-  };
-}
+//   public convertRUBtoUSD = async (rub: number): Promise<number> => {
+//     return (
+//       rub /
+//       (this.currencyRatesRUBtoUSD ??
+//         (await this.requests.getCurrency(this.linkToCurrencies)))
+//     );
+//   };
+// }
 
 class Analyzer {
-  private converter: CurrencyConverter = new CurrencyConverter();
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // private converter: CurrencyConverter = new CurrencyConverter();
 
-  public start = async (
+  public prepare = async (
     full_vacancies: API.FullVacancy[]
-  ): Promise<API.FullVacancy[]> => {
-    console.log(await this.converter.convertRUBtoUSD(47000));
+  ): Promise<API.PreparedVacancy[]> => {
+    // нам важны поля key_skills
+    const prepared_vacancies = full_vacancies.map((vac: API.FullVacancy) => {
+      return {
+        id: vac.id,
+        name: vac.name,
+        area: vac.area,
+        key_skills: vac.key_skills,
+        has_test: vac.has_test,
+        test: vac.test,
+        billing_type: vac.billing_type,
+        accept_incomplete_resumes: vac.accept_incomplete_resumes
+      };
+    });
 
-    // массив вакансий с указанной ЗП
-    const with_salary: API.FullVacancy[] = full_vacancies.filter(
-      (vac) => vac.salary !== null
-    );
-    // console.log('with set salary', with_salary.length);
-
-    const with_salary_limit: API.FullVacancy[] = with_salary.filter(
-      (vac) => vac.salary.from !== null && vac.salary.to !== null
-    );
-
-    // console.log('with limit:', with_salary_limit.length);
-
-    with_salary_limit.sort(
-      (vac1: API.FullVacancy, vac2: API.FullVacancy) =>
-        vac2.salary.to - vac1.salary.to
-    );
-
-    return with_salary_limit;
+    return prepared_vacancies;
   };
+
+  // public start = async (
+  //   full_vacancies: API.FullVacancy[]
+  // ): Promise<API.FullVacancy[]> => {
+  //   console.log(await this.converter.convertRUBtoUSD(47000));
+
+  // };
 }
 
 class Core {
@@ -70,6 +73,10 @@ class Core {
     limit: number
   ): Promise<API.Vacancy[]> => {
     return this.requests.getVacancies(url, limit);
+  };
+
+  public getClusters = async (url: API.URL): Promise<API.Vacancy[]> => {
+    return this.requests.getClusters(url);
   };
 
   /**
@@ -96,7 +103,13 @@ class Core {
   public analyze = async (
     full_vacancies: API.FullVacancy[]
   ): Promise<API.FullVacancy[]> => {
-    return this.analyzer.start(full_vacancies);
+    return full_vacancies; //this.analyzer.start(full_vacancies);
+  };
+
+  public prepare = async (
+    full_vacancies: API.FullVacancy[]
+  ): Promise<API.PreparedVacancy[]> => {
+    return this.analyzer.prepare(full_vacancies);
   };
 
   /**

@@ -7,6 +7,7 @@ import Hash from './hash.js';
 
 import { resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+
 // import { URL } from 'url';
 
 // Модуль запросов
@@ -28,8 +29,6 @@ class Requests {
     // чтобы не получать ненужные данные
     url = url.replace(/per_page=(100)|[0-9]\d?/, 'per_page=0');
 
-    console.log(encodeURI(url));
-
     // сделать запрос и дождаться json-представления
     const data: any = await fetch(encodeURI(url), {
       headers: this.hh_headers
@@ -39,7 +38,17 @@ class Requests {
     return data.found;
   };
 
-  // public getClusters = async (query: API.Query): Promise<API.Vacancy[]> => {};
+  public getClusters = async (base_api_url: API.URL): Promise<API.Clusters> => {
+    const clusters_url = this.formatter
+      .getURL(base_api_url)
+      .replace(/per_page=(100)|[0-9]\d?/, 'per_page=0');
+
+    const clusters = await fetch(encodeURI(clusters_url), {
+      headers: this.hh_headers
+    }).then((res) => res.json());
+
+    return clusters;
+  };
 
   /**
    * асинхронно делает запросы на REST API, возвращает массив вакансий
@@ -52,8 +61,6 @@ class Requests {
   ): Promise<API.Vacancy[]> => {
     // получить строчное представление url
     const base_url = this.formatter.getURL(base_api_url);
-
-    console.log(base_url);
 
     // общее число найденных вакансий
     const found: number = await this.getFound(base_url);
@@ -78,7 +85,9 @@ class Requests {
 
     // сделать серию ассинхронных запросов, получить promise представления json
     const data: Promise<API.Vacancy>[] = urls.map((url) =>
-      this.fetchCache(encodeURI(url), { headers: this.hh_headers })
+      fetch(encodeURI(url), { headers: this.hh_headers }).then((res) =>
+        res.json()
+      )
     );
 
     // дождаться резолва промисов, получить их поля items

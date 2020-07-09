@@ -73,6 +73,8 @@ export namespace API {
    */
   export type Vacancy = any;
   export type FullVacancy = any;
+  export type Clusters = any;
+  export type PreparedVacancy = any;
 
   /// Not used
   export interface Response {
