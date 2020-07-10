@@ -88,7 +88,7 @@ class CLI {
        */
       .option('-L, --locale <lang>', 'язык локализации', 'RU');
 
-    this.cli.option('-C, --cluster').description('скачивание кластеров');
+    this.cli.option('-C, --cluster', 'скачивание кластеров');
 
     this.cli.option<number>(
       '-l, --limit <number>',
