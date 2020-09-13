@@ -27,7 +27,7 @@
   "dependencies": {
     "commander": "^5.1.0",
     "d3-array": "^2.4.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "typescript": "^3.9.5"
   },
   "repository": {
