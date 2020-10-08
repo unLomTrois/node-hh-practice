@@ -176,6 +176,7 @@ class Analyzer {
           ratio: parseFloat(((arr[1] / key_skills.length) * 100).toFixed(2))
         };
       })
+      .filter(skill => skill.ratio >= 0.1)
       .sort((skill_1, skill_2) =>
         skill_1.count < skill_2.count
           ? 1
