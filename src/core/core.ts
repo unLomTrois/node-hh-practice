@@ -6,8 +6,8 @@ import { API } from '../types/api/module';
 
 class Core {
   public requests: Requests = new Requests();
-  private analyzer: Analyzer = new Analyzer();
-  private prepare: Prepare = new Prepare();
+  public analyzer: Analyzer = new Analyzer();
+  public prepare: Prepare = new Prepare();
 
   public getClusters = async (url: API.URL): Promise<API.Vacancy[]> => {
     return this.requests.getClusters(url);
@@ -30,23 +30,6 @@ class Core {
     const full_vacancies: API.FullVacancy[] = await this.requests.getFullVacancies(limited_urls);
 
     return full_vacancies;
-  };
-
-  public analyze = async (
-    prepared_vacancies: API.PreparedVacancy[],
-    prepared_clusters: API.PreparedClusters
-  ): Promise<API.AnalyzedData> => {
-    return this.analyzer.analyze(prepared_vacancies, prepared_clusters);
-  };
-
-  public prepareVacancies = async (
-    full_vacancies: API.FullVacancy[]
-  ): Promise<API.PreparedVacancy[]> => {
-    return this.prepare.prepareVacancies(full_vacancies);
-  };
-
-  public prepareClusters = async (full_vacancies: API.Clusters): Promise<API.PreparedClusters> => {
-    return this.prepare.prepareClusters(full_vacancies);
   };
 
   /**

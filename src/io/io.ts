@@ -91,7 +91,7 @@ class IO {
 
     const prepared_clusters: API.PreparedClusters = this.getFromLog('prepared_clusters.json');
 
-    const analyzed_data = await this.core.analyze(prepared_vacancies, prepared_clusters);
+    const analyzed_data = await this.core.analyzer.analyze(prepared_vacancies, prepared_clusters);
 
     this.save(analyzed_data, 'analyzed_data.json');
   };
@@ -102,11 +102,13 @@ class IO {
     const clusters: API.Clusters = this.getFromLog('clusters.json');
 
     // prepared data
-    const prepared_vacancies: API.PreparedVacancy[] = await this.core.prepareVacancies(
+    const prepared_vacancies: API.PreparedVacancy[] = await this.core.prepare.prepareVacancies(
       full_vacancies
     );
 
-    const prepared_clusters: API.PreparedClusters = await this.core.prepareClusters(clusters);
+    const prepared_clusters: API.PreparedClusters = await this.core.prepare.prepareClusters(
+      clusters
+    );
 
     this.save(prepared_vacancies, 'prepared_vacancies.json');
     this.save(prepared_clusters, 'prepared_clusters.json');

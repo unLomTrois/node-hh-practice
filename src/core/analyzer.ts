@@ -5,10 +5,10 @@ import d3 from 'd3-array';
  * @todo убрать асинки
  */
 class Analyzer {
-  public analyze = async (
+  public analyze = (
     prepared_vacancies: API.PreparedVacancy[],
     prepared_clusters: API.PreparedClusters
-  ): Promise<API.AnalyzedData> => {
+  ): API.AnalyzedData => {
     // обработка вакансий
 
     const rated_skills = this.rateKeySkills(prepared_vacancies);
