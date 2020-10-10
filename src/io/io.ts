@@ -12,9 +12,15 @@ import { resolve } from 'path';
  * @link https://trello.com/c/oFJsCDZK
  */
 class IO {
+  public silent_mode: boolean;
   private core = new Core();
   private _save = new Save();
   private log_dir_path = './log';
+
+  constructor(silent_mode: boolean) {
+    this.silent_mode = silent_mode;
+    this._save.silent_mode = this.silent_mode;
+  }
 
   /**
    * находит, получает и сохраняет массивы вакансий по @request
@@ -45,7 +51,9 @@ class IO {
     // сохранить собранные вакансии
     this.save(vacancies, 'vacancies.json');
 
-    console.log(`вакансий найдено: ${vacancies.length}`);
+    if (!this.silent_mode) {
+      console.log(`вакансий найдено: ${vacancies.length}`);
+    }
 
     // cluster part
     if (request.cluster) {

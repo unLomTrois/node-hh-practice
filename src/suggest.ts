@@ -7,19 +7,49 @@ import { URL } from 'url';
  * Делает вспомогательные запросы
  */
 class Suggest {
+  public silent_mode: boolean = false;
+
   /**
    * делает запрос и получает индекс территории
    * @param text - название территории, например: "Россия", "Москва"
-   * @param locale - локализация запроса, дефолт: "RU"
+   * @param language - локализация запроса, дефолт: "RU"
    */
-  public area = async (text: string, locale = 'RU'): Promise<number> => {
-    const url = `https://api.hh.ru/suggests/areas?text=${text}&locale=${locale}`;
+  public area = async (text: string, language = 'RU'): Promise<number> => {
+    // проверка что text является числом
+    if (!isNaN(Number(text))) {
+      const id = Number(text);
+      // валидация
+      if (!(await this.isValidID(id))) {
+        throw new Error('указан невалидный код территории');
+      }
+
+      return id;
+    }
+
+    const url = `https://api.hh.ru/suggests/areas?text=${text}&locale=${language}`;
 
     const data: any = await fetch(new URL(url)).then((res) => res.json());
 
     const area = data.items[0];
 
+    if (!this.silent_mode) {
+      console.log(`территория поиска вакансий: ${area.text}`);
+    }
+
     return area.id;
+  };
+
+  private isValidID = async (id: number): Promise<boolean> => {
+    const url = `https://api.hh.ru/areas/${id}`;
+
+    const data: any = await fetch(new URL(url)).then((res) => res.json());
+
+    if (!this.silent_mode) {
+      console.log(`территория поиска вакансий: ${data.name}`);
+    }
+
+    // проверка на отсутствие поля "errors"
+    return data.errors === undefined;
   };
 }
 

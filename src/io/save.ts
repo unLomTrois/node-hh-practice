@@ -6,6 +6,8 @@ import { resolve } from 'path';
  * @link https://trello.com/c/SfevqagQ
  */
 class Save {
+  public silent_mode: boolean = false;
+
   /**
    * метод сохранения вакансий
    * @param something_to_save - что-то, что мы хотим добавить в лог
@@ -24,7 +26,9 @@ class Save {
     // сохранить в лог
     writeFile(log_path, JSON.stringify(something_to_save, undefined, 2), (err) => {
       if (err) throw err;
-      console.log(`успешно сохранено в ${log_path}`);
+      if (!this.silent_mode) {
+        console.log(`успешно сохранено в ${log_path}`);
+      }
     });
   };
 }
