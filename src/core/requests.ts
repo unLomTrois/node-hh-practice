@@ -55,10 +55,7 @@ class Requests {
    * @param query - запрос, объект типа API.Query
    * @param limit - ограничение по количеству требуемых к выдаче вакансий
    */
-  public getVacancies = async (
-    base_api_url: API.URL,
-    limit = 2000
-  ): Promise<API.Vacancy[]> => {
+  public getVacancies = async (base_api_url: API.URL, limit = 2000): Promise<API.Vacancy[]> => {
     // получить строчное представление url
     const base_url = this.formatter.getURL(base_api_url);
 
@@ -69,22 +66,16 @@ class Requests {
     const per_page: number = base_api_url.query.per_page ?? 100;
 
     // вычисляем количество требуемых страниц
-    const pages: number = Math.ceil(
-      (found <= limit ? found : limit) / per_page
-    );
+    const pages: number = Math.ceil((found <= limit ? found : limit) / per_page);
 
     // сгенерировать массив ссылок числом pages, с пагинацией page
-    const urls: string[] = Array.from(
-      Array(pages).fill(base_url),
-      (url: string, page: number) =>
-        url.replace(/&page=([0-9]|1[0-9])/, `&page=${page}`)
+    const urls: string[] = Array.from(Array(pages).fill(base_url), (url: string, page: number) =>
+      url.replace(/&page=([0-9]|1[0-9])/, `&page=${page}`)
     );
 
     // сделать серию ассинхронных запросов, получить promise представления json
     const data: Promise<API.Vacancy>[] = urls.map((url) =>
-      fetch(encodeURI(url), { headers: this.hh_headers }).then((res) =>
-        res.json()
-      )
+      fetch(encodeURI(url), { headers: this.hh_headers }).then((res) => res.json())
     );
 
     // дождаться резолва промисов, получить их поля items
@@ -99,9 +90,7 @@ class Requests {
    * асинхронно делает запросы по ссылкам urls, возвращает массив из полных вакансий
    * @param urls - массив из строк вида URL
    */
-  public getFullVacancies = async (
-    urls: string[]
-  ): Promise<API.FullVacancy[]> => {
+  public getFullVacancies = async (urls: string[]): Promise<API.FullVacancy[]> => {
     const data: Promise<API.FullVacancy>[] = urls.map((url) =>
       this.fetchCache(url, { headers: this.hh_headers })
     );
@@ -121,21 +110,14 @@ class Requests {
    * @param url - строка вида URL
    * @param init - объект RequestInit
    */
-  private fetchCache = async (
-    url: string,
-    init?: RequestInit
-  ): Promise<any> => {
+  private fetchCache = async (url: string, init?: RequestInit): Promise<any> => {
     const cahceDirPath = './cache';
     if (!existsSync(cahceDirPath)) {
       mkdirSync(cahceDirPath);
     }
 
     const cacheHash: string = this.hash.md5(url);
-    const cacheFilePath: string = resolve(
-      process.cwd(),
-      cahceDirPath,
-      `${cacheHash}`
-    );
+    const cacheFilePath: string = resolve(process.cwd(), cahceDirPath, `${cacheHash}`);
 
     if (existsSync(cacheFilePath)) {
       // read from cache

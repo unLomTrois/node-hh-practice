@@ -36,26 +36,19 @@ class IO {
     };
 
     // получить вакансии
-    const vacancies: API.Vacancy[] = await this.getVacancies(
-      base_api_url,
-      request.limit
-    );
+    const vacancies: API.Vacancy[] = await this.getVacancies(base_api_url, request.limit);
 
     // сохранить собранные вакансии
     this.save(vacancies, 'vacancies.json');
 
     // cluster part
     if (request.cluster) {
-      const clusters_api_url: API.URL = JSON.parse(
-        JSON.stringify(base_api_url)
-      );
+      const clusters_api_url: API.URL = JSON.parse(JSON.stringify(base_api_url));
 
       clusters_api_url.query.clusters = true;
 
       // получить вакансии
-      const vacancies_clusters: API.Vacancy[] = await this.getClusters(
-        clusters_api_url
-      );
+      const vacancies_clusters: API.Vacancy[] = await this.getClusters(clusters_api_url);
 
       // сохранить собранные вакансии
       this.save(vacancies_clusters, 'clusters.json');
@@ -71,36 +64,24 @@ class IO {
     /**
      * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
      */
-    const full_vacancies: API.FullVacancy[] = await this.getFullVacancies(
-      short_vacancies,
-      limit
-    );
+    const full_vacancies: API.FullVacancy[] = await this.getFullVacancies(short_vacancies, limit);
 
     this.save(full_vacancies, 'full_vacancies.json');
   };
 
   public analyze = async (): Promise<void> => {
-    const prepared_vacancies: API.PreparedVacancy[] = this.getFromLog(
-      'prepared_vacancies.json'
-    );
+    const prepared_vacancies: API.PreparedVacancy[] = this.getFromLog('prepared_vacancies.json');
 
-    const prepared_clusters: API.PreparedClusters = this.getFromLog(
-      'prepared_clusters.json'
-    );
+    const prepared_clusters: API.PreparedClusters = this.getFromLog('prepared_clusters.json');
 
-    const analyzed_data = await this.core.analyze(
-      prepared_vacancies,
-      prepared_clusters
-    );
+    const analyzed_data = await this.core.analyze(prepared_vacancies, prepared_clusters);
 
     this.save(analyzed_data, 'analyzed_data.json');
   };
 
   public prepare = async (): Promise<void> => {
     // RAW data
-    const full_vacancies: API.FullVacancy[] = this.getFromLog(
-      'full_vacancies.json'
-    );
+    const full_vacancies: API.FullVacancy[] = this.getFromLog('full_vacancies.json');
     const clusters: API.Clusters = this.getFromLog('clusters.json');
 
     // prepared data
@@ -108,9 +89,7 @@ class IO {
       full_vacancies
     );
 
-    const prepared_clusters: API.PreparedClusters = await this.core.prepareClusters(
-      clusters
-    );
+    const prepared_clusters: API.PreparedClusters = await this.core.prepareClusters(clusters);
 
     this.save(prepared_vacancies, 'prepared_vacancies.json');
     this.save(prepared_clusters, 'prepared_clusters.json');
@@ -125,8 +104,7 @@ class IO {
   private getFullVacancies = async (
     short_vacancies: API.Vacancy[],
     limit: number
-  ): Promise<API.FullVacancy[]> =>
-    this.core.getFullVacancies(short_vacancies, limit);
+  ): Promise<API.FullVacancy[]> => this.core.getFullVacancies(short_vacancies, limit);
 
   /**
    * запрашиват из Core вакансии по запросу @request
@@ -134,10 +112,7 @@ class IO {
    * возвращает массив из API.Vacancy, не превышающий 2000 объектов
    * @param request - объект IO.Request
    */
-  private getVacancies = (
-    url: API.URL,
-    limit: number
-  ): Promise<API.Vacancy[]> => {
+  private getVacancies = (url: API.URL, limit: number): Promise<API.Vacancy[]> => {
     return this.core.getVacancies(url, limit);
   };
 
@@ -162,9 +137,7 @@ class IO {
     const path = resolve(process.cwd(), log_dir_path, log_file_name);
 
     // short_vacancies
-    const data: API.Vacancy[] = JSON.parse(
-      readFileSync(path, { encoding: 'utf-8' })
-    );
+    const data: API.Vacancy[] = JSON.parse(readFileSync(path, { encoding: 'utf-8' }));
 
     return data;
   };

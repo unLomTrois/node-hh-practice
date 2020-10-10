@@ -14,10 +14,7 @@ class Core {
    * @param query - запрос, объект API.Query
    * @param limit - ограничение по количеству требуемых к выдаче вакансий
    */
-  public getVacancies = async (
-    url: API.URL,
-    limit: number
-  ): Promise<API.Vacancy[]> => {
+  public getVacancies = async (url: API.URL, limit: number): Promise<API.Vacancy[]> => {
     return this.requests.getVacancies(url, limit);
   };
 
@@ -39,9 +36,7 @@ class Core {
     const limited_urls = urls.slice(0, limit);
 
     // профетчить полученный массив url-ов через модуль запросов
-    const full_vacancies: API.FullVacancy[] = await this.requests.getFullVacancies(
-      limited_urls
-    );
+    const full_vacancies: API.FullVacancy[] = await this.requests.getFullVacancies(limited_urls);
 
     return full_vacancies;
   };
@@ -59,9 +54,7 @@ class Core {
     return this.prepare.prepareVacancies(full_vacancies);
   };
 
-  public prepareClusters = async (
-    full_vacancies: API.Clusters
-  ): Promise<API.PreparedClusters> => {
+  public prepareClusters = async (full_vacancies: API.Clusters): Promise<API.PreparedClusters> => {
     return this.prepare.prepareClusters(full_vacancies);
   };
 

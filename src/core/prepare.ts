@@ -21,9 +21,7 @@ class Prepare {
     return prepared_vacancies;
   };
 
-  public prepareClusters = async (
-    clusters: API.Clusters
-  ): Promise<API.PreparedClusters> => {
+  public prepareClusters = async (clusters: API.Clusters): Promise<API.PreparedClusters> => {
     const clusters_parts: any[] = clusters.clusters;
 
     // нам важны поля key_skills

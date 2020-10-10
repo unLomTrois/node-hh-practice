@@ -90,12 +90,7 @@ class CLI {
 
     this.cli.option('-C, --cluster', 'скачивание кластеров');
 
-    this.cli.option<number>(
-      '-l, --limit <number>',
-      'ограничение по поиску',
-      parseFloat,
-      2000
-    );
+    this.cli.option<number>('-l, --limit <number>', 'ограничение по поиску', parseFloat, 2000);
   };
 }
 
