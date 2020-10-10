@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@types/d3-array": "^2.0.0",
-    "@types/listr": "^0.14.2",
     "@types/node-fetch": "^2.5.7"
   },
   "dependencies": {
