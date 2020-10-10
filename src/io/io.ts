@@ -14,6 +14,7 @@ import { resolve } from 'path';
 class IO {
   private core = new Core();
   private _save = new Save();
+  private log_dir_path = './log';
 
   /**
    * находит, получает и сохраняет массивы вакансий по @request
@@ -36,10 +37,15 @@ class IO {
     };
 
     // получить вакансии
-    const vacancies: API.Vacancy[] = await this.getVacancies(base_api_url, request.limit);
+    const vacancies: API.Vacancy[] = await this.core.requests.getVacancies(
+      base_api_url,
+      request.limit
+    );
 
     // сохранить собранные вакансии
     this.save(vacancies, 'vacancies.json');
+
+    console.log(`вакансий найдено: ${vacancies.length}`);
 
     // cluster part
     if (request.cluster) {
@@ -48,7 +54,7 @@ class IO {
       clusters_api_url.query.clusters = true;
 
       // получить вакансии
-      const vacancies_clusters: API.Vacancy[] = await this.getClusters(clusters_api_url);
+      const vacancies_clusters: API.Vacancy[] = await this.core.getClusters(clusters_api_url);
 
       // сохранить собранные вакансии
       this.save(vacancies_clusters, 'clusters.json');
@@ -64,7 +70,10 @@ class IO {
     /**
      * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
      */
-    const full_vacancies: API.FullVacancy[] = await this.getFullVacancies(short_vacancies, limit);
+    const full_vacancies: API.FullVacancy[] = await this.core.getFullVacancies(
+      short_vacancies,
+      limit
+    );
 
     this.save(full_vacancies, 'full_vacancies.json');
   };
@@ -96,45 +105,18 @@ class IO {
   };
 
   /**
-   * запрашивает из Core полное представления вакансий
-   *
-   * возвращает массив из API.FullVacancy, не превышающий 2000 объектов
-   * @param short_vacancies - массив из объектов API.Vacancy
-   */
-  private getFullVacancies = async (
-    short_vacancies: API.Vacancy[],
-    limit: number
-  ): Promise<API.FullVacancy[]> => this.core.getFullVacancies(short_vacancies, limit);
-
-  /**
-   * запрашиват из Core вакансии по запросу @request
-   *
-   * возвращает массив из API.Vacancy, не превышающий 2000 объектов
-   * @param request - объект IO.Request
-   */
-  private getVacancies = (url: API.URL, limit: number): Promise<API.Vacancy[]> => {
-    return this.core.getVacancies(url, limit);
-  };
-
-  private getClusters = (url: API.URL): Promise<any> => {
-    return this.core.getClusters(url);
-  };
-
-  /**
    * сохраняет собранные вакансии
    * @param vacancies - API.Vacancies
    */
-  private save = (someToSave: any, logfilename: string): void => {
-    return this._save.add(someToSave, 'log', logfilename);
+  private save = (something_to_save: any, filename_to_log: string): void => {
+    return this._save.add(something_to_save, this.log_dir_path, filename_to_log);
   };
 
   /**
    * получает массив вакансий c названием log_file_name из папки log
    */
   private getFromLog = (log_file_name: string): API.Vacancy[] => {
-    const log_dir_path = './log';
-
-    const path = resolve(process.cwd(), log_dir_path, log_file_name);
+    const path = resolve(process.cwd(), this.log_dir_path, log_file_name);
 
     // short_vacancies
     const data: API.Vacancy[] = JSON.parse(readFileSync(path, { encoding: 'utf-8' }));

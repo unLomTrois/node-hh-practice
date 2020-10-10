@@ -14,22 +14,29 @@ class CLI {
    * запуск CLI
    */
   public run = () => {
-    this.initCLI();
-
-    this.cli.parse(process.argv);
-  };
-
-  /**
-   * инициализация CLI
-   *
-   * инициализируются поля и команды (операции)
-   */
-  private initCLI = () => {
     this.cli.name('node-hh-parser').version('0.6.0');
 
     this.initCLIOptions();
 
     this.initCLICommands();
+
+    this.cli.parse(process.argv);
+  };
+
+  /**
+   * инициализация полей (опций)
+   */
+  private initCLIOptions = () => {
+    this.cli
+      .option<number>(
+        '-a, --area <area-name>',
+        'название территории поиска или индекс',
+        parseFloat,
+        1624
+      )
+      .option('-L, --locale <lang>', 'язык локализации', 'RU')
+      .option('-C, --cluster', 'поиск по кластерам')
+      .option<number>('-l, --limit <number>', 'ограничение по поиску', parseFloat, 2000);
   };
 
   /**
@@ -46,51 +53,25 @@ class CLI {
           limit: this.cli.limit,
           cluster: this.cli.cluster ?? false
         });
-      });
+      })
 
-    this.cli
       .command('get-full')
-      .description(
-        'получает полное представление вакансий, полученных в результате вызова команды search'
-      )
+      .description('получает полное представление вакансий')
       .action(() => {
         this.io.getFull(this.cli.limit);
-      });
+      })
 
-    this.cli
       .command('prepare')
       .description('подготовить полные вакансии, очистить их от ненужных полей')
       .action(() => {
         this.io.prepare();
-      });
+      })
 
-    this.cli
       .command('analyze')
       .description('проанализировать полученные данные')
       .action(() => {
         this.io.analyze();
       });
-  };
-
-  /**
-   * инициализация полей (опций)
-   */
-  private initCLIOptions = () => {
-    this.cli
-      .option<number>(
-        '-a, --area <area-name>',
-        'название территории поиска или индекс',
-        parseFloat,
-        1624
-      )
-      /**
-       * @todo расписать возможные состояния
-       */
-      .option('-L, --locale <lang>', 'язык локализации', 'RU');
-
-    this.cli.option('-C, --cluster', 'скачивание кластеров');
-
-    this.cli.option<number>('-l, --limit <number>', 'ограничение по поиску', parseFloat, 2000);
   };
 }
 

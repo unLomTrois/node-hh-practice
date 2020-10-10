@@ -5,18 +5,9 @@ import Prepare from './prepare.js';
 import { API } from '../types/api/module';
 
 class Core {
-  private requests: Requests = new Requests();
+  public requests: Requests = new Requests();
   private analyzer: Analyzer = new Analyzer();
   private prepare: Prepare = new Prepare();
-
-  /**
-   * запрашивает списки вакансий из Request-модуля, возвращает их
-   * @param query - запрос, объект API.Query
-   * @param limit - ограничение по количеству требуемых к выдаче вакансий
-   */
-  public getVacancies = async (url: API.URL, limit: number): Promise<API.Vacancy[]> => {
-    return this.requests.getVacancies(url, limit);
-  };
 
   public getClusters = async (url: API.URL): Promise<API.Vacancy[]> => {
     return this.requests.getClusters(url);
