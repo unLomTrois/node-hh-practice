@@ -1,32 +1,13 @@
 export namespace API {
   type schedule = 'fullDay' | 'shift' | 'flexible' | 'remote' | 'flyInFlyOut';
 
-  type experience =
-    | 'noExperience'
-    | 'between1And3'
-    | 'between3And6'
-    | 'moreThan6';
+  type experience = 'noExperience' | 'between1And3' | 'between3And6' | 'moreThan6';
 
   type employment = 'full' | 'part' | 'project' | 'volunteer' | 'probation';
 
-  type currency =
-    | 'AZN'
-    | 'BYR'
-    | 'EUR'
-    | 'GEL'
-    | 'KGS'
-    | 'KZT'
-    | 'RUR'
-    | 'UAH'
-    | 'USD'
-    | 'UZS';
+  type currency = 'AZN' | 'BYR' | 'EUR' | 'GEL' | 'KGS' | 'KZT' | 'RUR' | 'UAH' | 'USD' | 'UZS';
 
-  type order_by =
-    | 'publication_time'
-    | 'salary_desc'
-    | 'salary_asc'
-    | 'relevance'
-    | 'distance';
+  type order_by = 'publication_time' | 'salary_desc' | 'salary_asc' | 'relevance' | 'distance';
 
   type search_field = 'name' | 'company_name' | 'description';
 
@@ -78,7 +59,23 @@ export namespace API {
   export type PreparedVacancy = any;
   export type PreparedClusters = any;
 
+  /// Analyzer
+
   export type AnalyzedData = any;
+
+  export type analyzedInfo = any;
+
+  export type SalaryCluster = any[];
+
+  export type ExperienceCluster = any[];
+
+  export type EmploymentCluster = any[];
+
+  export type ScheduleCluster = any[];
+
+  export type IndustryCluster = any[];
+
+  export type SimpleCluster = EmploymentCluster | ScheduleCluster | IndustryCluster;
 
   /// Not used
   export interface Response {
