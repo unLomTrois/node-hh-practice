@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import fetch from 'node-fetch';
 import { URL } from 'url';
 
@@ -33,7 +34,7 @@ class Suggest {
     const area = data.items[0];
 
     if (!this.silent_mode) {
-      console.log(`территория поиска вакансий: ${area.text}`);
+      console.log(chalk.yellow('территория поиска вакансий:'), chalk.green(area.text));
     }
 
     return area.id;
@@ -45,7 +46,7 @@ class Suggest {
     const data: any = await fetch(new URL(url)).then((res) => res.json());
 
     if (!this.silent_mode) {
-      console.log(`территория поиска вакансий: ${data.name}`);
+      console.log(chalk.yellow('территория поиска вакансий:'), chalk.green(data.name));
     }
 
     // проверка на отсутствие поля "errors"

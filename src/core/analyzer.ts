@@ -1,9 +1,6 @@
 import { API } from '../types/api/module';
 import d3 from 'd3-array';
 
-/**
- * @todo убрать асинки
- */
 class Analyzer {
   public analyze = (
     prepared_vacancies: API.PreparedVacancy[],

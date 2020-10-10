@@ -8,8 +8,8 @@ import Suggest from './suggest.js';
  * Модуль CLI
  */
 class CLI {
-  private io!: IO;
   private cli = new commander.Command();
+  private io = new IO();
   private suggest = new Suggest();
 
   /**
@@ -24,7 +24,8 @@ class CLI {
 
     this.cli.parse(process.argv);
 
-    this.io = new IO(this.cli.silent);
+    this.io.setSilent(this.cli.silent);
+    this.suggest.silent_mode = this.cli.silent;
   };
 
   /**
@@ -59,18 +60,21 @@ class CLI {
         });
       })
 
+    this.cli
       .command('get-full')
       .description('получает полное представление вакансий')
       .action(() => {
         this.io.getFull(this.cli.limit);
-      })
+      });
 
+    this.cli
       .command('prepare')
       .description('подготовить полные вакансии, очистить их от ненужных полей')
       .action(() => {
         this.io.prepare();
-      })
+      });
 
+    this.cli
       .command('analyze')
       .description('проанализировать полученные данные')
       .action(() => {

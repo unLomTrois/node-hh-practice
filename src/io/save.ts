@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { writeFile, existsSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 
@@ -27,7 +28,7 @@ class Save {
     writeFile(log_path, JSON.stringify(something_to_save, undefined, 2), (err) => {
       if (err) throw err;
       if (!this.silent_mode) {
-        console.log(`успешно сохранено в ${log_path}`);
+        console.log(chalk.yellow('успешно сохранено в:'), chalk.green(log_path));
       }
     });
   };

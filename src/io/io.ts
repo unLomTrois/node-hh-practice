@@ -6,21 +6,22 @@ import { API } from '../types/api/module.js';
 
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import chalk from 'chalk';
 
 /**
  * Модуль IO
  * @link https://trello.com/c/oFJsCDZK
  */
 class IO {
-  public silent_mode: boolean;
+  public silent_mode: boolean = false;
   private core = new Core();
   private _save = new Save();
   private log_dir_path = './log';
 
-  constructor(silent_mode: boolean) {
-    this.silent_mode = silent_mode;
-    this._save.silent_mode = this.silent_mode;
-  }
+  public setSilent = (silent: boolean) => {
+    this.silent_mode = silent;
+    this._save.silent_mode = silent;
+  };
 
   /**
    * находит, получает и сохраняет массивы вакансий по @request
@@ -52,7 +53,7 @@ class IO {
     this.save(vacancies, 'vacancies.json');
 
     if (!this.silent_mode) {
-      console.log(`вакансий найдено: ${vacancies.length}`);
+      console.log(chalk.yellow('вакансий найдено:'), chalk.green(vacancies.length));
     }
 
     // cluster part
@@ -73,15 +74,20 @@ class IO {
    * Получает и сохраняет массивы полного представления вакансий
    */
   public getFull = async (limit = 2000): Promise<void> => {
-    const short_vacancies = this.getFromLog('vacancies.json');
+    const short_vacancies = await this.getFromLog('vacancies.json');
 
-    /**
-     * @todo API.Vacancy - это общий вид, его нужно конкретизировать, есть также полный вид вакансии, и сокращённый
-     */
+    const start = new Date().getTime();
+
     const full_vacancies: API.FullVacancy[] = await this.core.getFullVacancies(
       short_vacancies,
       limit
     );
+
+    const end = new Date().getTime();
+
+    if (!this.silent_mode) {
+      console.log(chalk.yellow('время поиска:'), chalk.green((end - start) / 1000, 'сек'));
+    }
 
     this.save(full_vacancies, 'full_vacancies.json');
   };
