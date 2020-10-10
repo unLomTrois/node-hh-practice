@@ -28,7 +28,8 @@ class Save {
     writeFile(log_path, JSON.stringify(something_to_save, undefined, 2), (err) => {
       if (err) throw err;
       if (!this.silent_mode) {
-        console.log(chalk.yellow('успешно сохранено в:'), chalk.green(log_path));
+        const ctx = new chalk.Instance({ level: 1 });
+        console.log(ctx.yellow('успешно сохранено в:'), ctx.green(log_path));
       }
     });
   };

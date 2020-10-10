@@ -8,6 +8,8 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import chalk from 'chalk';
 
+const ctx = new chalk.Instance({ level: 1 });
+
 /**
  * Модуль IO
  * @link https://trello.com/c/oFJsCDZK
@@ -53,7 +55,7 @@ class IO {
     this.save(vacancies, 'vacancies.json');
 
     if (!this.silent_mode) {
-      console.log(chalk.yellow('вакансий найдено:'), chalk.green(vacancies.length));
+      console.log(ctx.yellow('вакансий найдено:'), ctx.green(vacancies.length));
     }
 
     // cluster part
@@ -86,7 +88,7 @@ class IO {
     const end = new Date().getTime();
 
     if (!this.silent_mode) {
-      console.log(chalk.yellow('время поиска:'), chalk.green((end - start) / 1000, 'сек'));
+      console.log(ctx.yellow('время поиска:'), ctx.green((end - start) / 1000, 'сек'));
     }
 
     this.save(full_vacancies, 'full_vacancies.json');
