@@ -1,7 +1,6 @@
 import Core from '../core/core.js';
 import Save from './save.js';
 
-import { IO } from '../types/io/module';
 import { API } from '../types/api/module.js';
 
 import { readFileSync } from 'fs';
@@ -29,7 +28,7 @@ class IO {
    * находит, получает и сохраняет массивы вакансий по @request
    * @param request - объект IO.Request
    */
-  public search = async (request: IO.Request): Promise<void> => {
+  public search = async (request: API.Request): Promise<void> => {
     const query: API.Query = {
       no_magic: true,
       per_page: 100,

@@ -77,6 +77,15 @@ export namespace API {
 
   export type SimpleCluster = EmploymentCluster | ScheduleCluster | IndustryCluster;
 
+  // IO
+
+  export interface Request {
+    text: string;
+    area: number;
+    limit: number;
+    cluster: boolean;
+  }
+
   /// Not used
   export interface Response {
     name: string;
