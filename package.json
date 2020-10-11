@@ -6,8 +6,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:ts": "tsc -b tsconfig.json",
-    "diagnose:ts": "tsc -b tsconfig.json --extendedDiagnostics",
+    "build": "tsc -b tsconfig.json",
     "start": "node build/index.js",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "eslint '*/**/*.ts' --fix"
