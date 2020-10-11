@@ -8,7 +8,7 @@ import { URL } from 'url';
  * Делает вспомогательные запросы
  */
 class Suggest {
-  public silent_mode: boolean = false;
+  public silent_mode = false;
 
   /**
    * делает запрос и получает индекс территории

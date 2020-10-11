@@ -7,7 +7,7 @@ import { resolve } from 'path';
  * @link https://trello.com/c/SfevqagQ
  */
 class Save {
-  public silent_mode: boolean = false;
+  public silent_mode = false;
 
   /**
    * метод сохранения вакансий

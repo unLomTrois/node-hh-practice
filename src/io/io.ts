@@ -15,7 +15,7 @@ const ctx = new chalk.Instance({ level: 1 });
  * @link https://trello.com/c/oFJsCDZK
  */
 class IO {
-  public silent_mode: boolean = false;
+  public silent_mode = false;
   private core = new Core();
   private _save = new Save();
   private log_dir_path = './log';
