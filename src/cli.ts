@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import commander from 'commander';
 import IO from './io/io.js';
 import Suggest from './suggest.js';
