@@ -18,7 +18,7 @@ class CLI {
    * запуск CLI
    */
   public run = () => {
-    this.cli.name('node-hh-parser').version('0.6.2');
+    this.cli.name('node-hh-parser').version('1.0.0');
 
     this.initCLIOptions();
 

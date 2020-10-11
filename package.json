@@ -1,6 +1,6 @@
 {
   "name": "node-hh-parser",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "bin": "bin/cli.js",
   "description": "",
   "private": true,
