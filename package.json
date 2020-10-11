@@ -8,27 +8,29 @@
   "scripts": {
     "build:ts": "tsc -b tsconfig.json",
     "diagnose:ts": "tsc -b tsconfig.json --extendedDiagnostics",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [
     "parser",
     "headhunter"
   ],
   "author": {
-    "name": "vadim kuznecov",
+    "name": "vadim kuznetsov",
     "email": "vadim.kuz02@gmail.com",
     "url": "https://github.com/unLomTrois"
   },
   "devDependencies": {
     "@types/d3-array": "^2.0.0",
-    "@types/node-fetch": "^2.5.7"
+    "@types/node-fetch": "^2.5.7",
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.3"
   },
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
     "d3-array": "^2.8.0",
-    "node-fetch": "^2.6.1",
-    "typescript": "^4.0.2"
+    "node-fetch": "^2.6.1"
   },
   "repository": {
     "type": "git",
