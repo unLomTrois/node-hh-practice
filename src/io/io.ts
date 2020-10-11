@@ -65,7 +65,9 @@ class IO {
       clusters_api_url.query.clusters = true;
 
       // получить вакансии
-      const vacancies_clusters: API.Vacancy[] = await this.core.getClusters(clusters_api_url);
+      const vacancies_clusters: API.Vacancy[] = await this.core.requests.getClusters(
+        clusters_api_url
+      );
 
       // сохранить собранные вакансии
       this.save(vacancies_clusters, 'clusters.json');
@@ -75,14 +77,18 @@ class IO {
   /**
    * Получает и сохраняет массивы полного представления вакансий
    */
-  public getFull = async (limit = 2000): Promise<void> => {
-    const short_vacancies = await this.getFromLog('vacancies.json');
+  public getFullVacancies = async (limit = 2000): Promise<void> => {
+    const short_vacancies = this.getFromLog('vacancies.json');
 
     const start = new Date().getTime();
 
-    const full_vacancies: API.FullVacancy[] = await this.core.getFullVacancies(
-      short_vacancies,
-      limit
+    // получаем ссылки на полные вакансии
+    const urls: string[] = short_vacancies.map((vac) => vac.url);
+    const limited_urls = urls.slice(0, limit);
+
+    // профетчить полученный массив url-ов через модуль запросов
+    const full_vacancies: API.FullVacancy[] = await this.core.requests.getFullVacancies(
+      limited_urls
     );
 
     const end = new Date().getTime();

@@ -80,7 +80,7 @@ class CLI {
       .command('get-full')
       .description('получает полное представление вакансий')
       .action(() => {
-        this.io.getFull(this.cli.limit);
+        this.io.getFullVacancies(this.cli.limit);
       });
 
     this.cli
