@@ -59,7 +59,9 @@ class IO {
 
     // cluster part
     if (request.cluster) {
-      const clusters_api_url: API.URL = JSON.parse(JSON.stringify(base_api_url));
+      const clusters_api_url: API.URL = JSON.parse(
+        JSON.stringify(base_api_url)
+      );
 
       clusters_api_url.query.clusters = true;
 
@@ -93,25 +95,37 @@ class IO {
     const end = new Date().getTime();
 
     if (!this.silent_mode) {
-      console.log(ctx.yellow('время поиска:'), ctx.green((end - start) / 1000, 'сек'));
+      console.log(
+        ctx.yellow('время поиска:'),
+        ctx.green((end - start) / 1000, 'сек')
+      );
     }
 
     this.save(full_vacancies, 'full_vacancies.json');
   };
 
   public analyze = async (): Promise<void> => {
-    const prepared_vacancies: API.PreparedVacancy[] = this.getFromLog('prepared_vacancies.json');
+    const prepared_vacancies: API.PreparedVacancy[] = this.getFromLog(
+      'prepared_vacancies.json'
+    );
 
-    const prepared_clusters: API.PreparedClusters = this.getFromLog('prepared_clusters.json');
+    const prepared_clusters: API.PreparedClusters = this.getFromLog(
+      'prepared_clusters.json'
+    );
 
-    const analyzed_data = await this.core.analyzer.analyze(prepared_vacancies, prepared_clusters);
+    const analyzed_data = await this.core.analyzer.analyze(
+      prepared_vacancies,
+      prepared_clusters
+    );
 
     this.save(analyzed_data, 'analyzed_data.json');
   };
 
   public prepare = async (): Promise<void> => {
     // RAW data
-    const full_vacancies: API.FullVacancy[] = this.getFromLog('full_vacancies.json');
+    const full_vacancies: API.FullVacancy[] = this.getFromLog(
+      'full_vacancies.json'
+    );
     const clusters: API.Clusters = this.getFromLog('clusters.json');
 
     // prepared data
@@ -132,7 +146,11 @@ class IO {
    * @param vacancies - API.Vacancies
    */
   private save = (something_to_save: any, filename_to_log: string): void => {
-    return this._save.add(something_to_save, this.log_dir_path, filename_to_log);
+    return this._save.add(
+      something_to_save,
+      this.log_dir_path,
+      filename_to_log
+    );
   };
 
   /**
@@ -142,7 +160,9 @@ class IO {
     const path = resolve(process.cwd(), this.log_dir_path, log_file_name);
 
     // short_vacancies
-    const data: API.Vacancy[] = JSON.parse(readFileSync(path, { encoding: 'utf-8' }));
+    const data: API.Vacancy[] = JSON.parse(
+      readFileSync(path, { encoding: 'utf-8' })
+    );
 
     return data;
   };

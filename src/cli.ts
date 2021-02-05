@@ -35,9 +35,22 @@ class CLI {
    */
   private initCLIOptions = () => {
     this.cli
-      .option<number>('-l, --limit <number>', 'ограничение по поиску', parseFloat, 2000)
-      .option('-A, --all', 'выполнить все остальные комманды автоматически', 'Россия')
-      .option('-a, --area <area-name>', 'название территории поиска или индекс', 'Россия')
+      .option<number>(
+        '-l, --limit <number>',
+        'ограничение по поиску',
+        parseFloat,
+        2000
+      )
+      .option(
+        '-A, --all',
+        'выполнить все остальные комманды автоматически',
+        'Россия'
+      )
+      .option(
+        '-a, --area <area-name>',
+        'название территории поиска или индекс',
+        'Россия'
+      )
       .option('-L, --language <язык>', 'язык локализации', 'RU')
       .option('-C, --cluster', 'поиск по кластерам')
       .option('-S, --silent', 'не выводить информацию в консоль');

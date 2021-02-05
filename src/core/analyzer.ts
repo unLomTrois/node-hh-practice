@@ -15,26 +15,38 @@ class Analyzer {
     // всего вакансий
     const found: number = prepared_clusters.found;
 
-    const salary_cluster: API.SalaryCluster = prepared_clusters.clusters.salary.items;
+    const salary_cluster: API.SalaryCluster =
+      prepared_clusters.clusters.salary.items;
 
-    const experience_cluster: API.ExperienceCluster = prepared_clusters.clusters.experience.items;
+    const experience_cluster: API.ExperienceCluster =
+      prepared_clusters.clusters.experience.items;
 
-    const employment_cluster: API.EmploymentCluster = prepared_clusters.clusters.employment.items;
+    const employment_cluster: API.EmploymentCluster =
+      prepared_clusters.clusters.employment.items;
 
-    const schedule_cluster: API.ScheduleCluster = prepared_clusters.clusters.schedule.items;
+    const schedule_cluster: API.ScheduleCluster =
+      prepared_clusters.clusters.schedule.items;
 
-    const industry_cluster: API.IndustryCluster = prepared_clusters.clusters.industry.items;
+    const industry_cluster: API.IndustryCluster =
+      prepared_clusters.clusters.industry.items;
 
     const analyzed_data: API.AnalyzedData = {
       analyzed_clusters: {
+        found: found,
         salary_info: this.analyzeSalaryCluster(salary_cluster, found),
-        experience_info: this.analyzeExperienceCluster(experience_cluster, found),
+        experience_info: this.analyzeExperienceCluster(
+          experience_cluster,
+          found
+        ),
         employment_info: this.analyzeSimpleCluster(employment_cluster, found),
         schedule_info: this.analyzeSimpleCluster(schedule_cluster, found),
         industry_info: this.analyzeSimpleCluster(industry_cluster, found)
       },
       analyzed_vacancies: {
-        key_skills: rated_skills
+        key_skills: {
+          top_ten: rated_skills.slice(0, 10),
+          full_list: rated_skills
+        }
       }
     };
 
@@ -48,7 +60,7 @@ class Analyzer {
     const groups: any[] = simple_cluster.map((part) => {
       delete part.url;
 
-      part.ratio = parseFloat(((part.count / found) * 100).toFixed(2));
+      part.ratio = parseFloat((part.count / found).toFixed(2));
 
       return part;
     });
@@ -64,27 +76,32 @@ class Analyzer {
       {
         from: 0,
         to: 1,
-        count: experience_cluster.find((part) => part.name === 'Нет опыта').count
+        count: experience_cluster.find((part) => part.name === 'Нет опыта')
+          .count
       },
       {
         from: 1,
         to: 3,
-        count: experience_cluster.find((part) => part.name === 'От 1 года до 3 лет').count
+        count: experience_cluster.find(
+          (part) => part.name === 'От 1 года до 3 лет'
+        ).count
       },
       {
         from: 3,
         to: 6,
-        count: experience_cluster.find((part) => part.name === 'От 3 до 6 лет').count
+        count: experience_cluster.find((part) => part.name === 'От 3 до 6 лет')
+          .count
       },
       {
         from: 6,
         to: null,
-        count: experience_cluster.find((part) => part.name === 'Более 6 лет').count
+        count: experience_cluster.find((part) => part.name === 'Более 6 лет')
+          .count
       }
     ];
 
     groups.forEach((exp) => {
-      exp.ratio = parseFloat(((exp.count / found) * 100).toFixed(2));
+      exp.ratio = parseFloat((exp.count / found).toFixed(2));
     });
 
     return groups;
@@ -97,27 +114,34 @@ class Analyzer {
     const borders: any[] = [];
 
     // количество вакансий с указанной зп
-    const specified: number = salary_cluster.find((part) => part.name === 'Указана').count;
+    const specified: number = salary_cluster.find(
+      (part) => part.name === 'Указана'
+    ).count;
 
-    salary_cluster.forEach((part) => {
+    salary_cluster.forEach((part: any) => {
       if (part.name !== 'Указана') {
         borders.push({
           from: parseFloat(part.name.split(' ')[1]), //полчаем число из фразы "от *число* руб."
           count: part.count,
-          ratio: parseFloat(((part.count / specified) * 100).toFixed(2))
+          ratio: parseFloat((part.count / found).toFixed(2))
         });
       }
     });
 
     // результат
     return {
-      mean_salary: parseFloat((d3.sum(borders, (d) => d.from * d.count) / specified).toFixed(2)), // средняя зп
+      specified: specified,
+      mean_salary: parseFloat(
+        (d3.sum(borders, (d) => d.from * d.count) / specified).toFixed(2)
+      ), // средняя зп
       specified_ratio: parseFloat((specified / found).toFixed(2)), // отношение всех вакансий к количеству с указнной зп
       borders
     };
   };
 
-  private rateKeySkills = (prepared_vacancies: API.PreparedVacancy[]): API.analyzedInfo[] => {
+  private rateKeySkills = (
+    prepared_vacancies: API.PreparedVacancy[]
+  ): API.analyzedInfo[] => {
     const key_skills: string[] = [].concat(
       ...prepared_vacancies.map((vac) =>
         vac.key_skills.map((key_list: { name: any }) => key_list.name)
@@ -131,20 +155,24 @@ class Analyzer {
       result[skill] = (result[skill] || 0) + 1;
     });
 
-    const weighed_skills = Object.entries<number>(result)
+    const rated_skills = Object.entries<number>(result)
       .map((arr) => {
         return {
           name: arr[0],
           count: arr[1],
-          ratio: parseFloat(((arr[1] / key_skills.length) * 100).toFixed(2))
+          ratio: parseFloat((arr[1] / prepared_vacancies.length).toFixed(2))
         };
       })
-      .filter((skill) => skill.ratio >= 0.1)
+      .filter((skill) => skill.ratio >= 0.01)
       .sort((skill_1, skill_2) =>
-        skill_1.count < skill_2.count ? 1 : skill_2.count < skill_1.count ? -1 : 0
+        skill_1.count < skill_2.count
+          ? 1
+          : skill_2.count < skill_1.count
+          ? -1
+          : 0
       );
 
-    return weighed_skills;
+    return rated_skills;
   };
 }
 
