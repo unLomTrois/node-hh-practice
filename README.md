@@ -1,5 +1,7 @@
 # node-hh-parser
 
+[![CodeQL](https://github.com/unLomTrois/node-hh-parser/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/unLomTrois/node-hh-parser/actions/workflows/codeql-analysis.yml)
+
 Приложение для летней образовательной практики 2020-го года.
 Всё приложение основано на [официальной документации использоания API HeadHunter](https://github.com/hhru/api).
 
